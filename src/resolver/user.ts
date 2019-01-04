@@ -1,10 +1,11 @@
 import * as nest from "@nestjs/common";
 import * as gql from "@nestjs/graphql";
-import { AuthTokenManager } from "../../manager";
-import { AuthManager } from "../../manager/AuthManager";
-import { DatabaseService } from "../../service";
+import { AuthTokenManager } from "../manager";
+import { AuthManager } from "../manager/AuthManager";
+import { DatabaseService } from "../service";
 
-export class CreateUserTokenResolver {
+@gql.Resolver("User")
+export class UserResolver {
   constructor(
     private authManager: AuthManager,
     private authTokenManager: AuthTokenManager,
