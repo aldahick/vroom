@@ -1,3 +1,2 @@
 export * from "./User";
-
-export * from "./auth/UserToken";
+export * from "./auth";
