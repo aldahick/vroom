@@ -1,0 +1,30 @@
+version: "3"
+services:
+  postgres:
+    image: "postgres:10"
+    ports:
+      - "5432:5432"
+    logging:
+      driver: none
+    environment:
+      POSTGRES_PASSWORD: "vroom_docker"
+  vroom:
+    build: .
+    command: node dist/main
+    volumes:
+      - .:/app
+      - /app/node_modules # preserve linux-built binaries
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      DB_TYPE: "postgres"
+      DB_HOST: "postgres"
+      DB_PORT: 5432
+      DB_USER: "postgres"
+      DB_PASSWORD: "vroom_docker"
+      DB_DATABASE: "postgres"
+      ENV: "development"
