@@ -1,3 +1,4 @@
 type Mutation {
+  createUser(username: String!, password: String!): User!
   createUserToken(username: String!, password: String!): String!
 }

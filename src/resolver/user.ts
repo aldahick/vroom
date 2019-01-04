@@ -12,10 +12,25 @@ export class UserResolver {
     private db: DatabaseService
   ) { }
 
+  @gql.Mutation("createUser")
+  async createUser(
+    @gql.Args("username") username: string,
+    @gql.Args("password") password: string
+  ) {
+    const existingUser = await this.db.users.findOne({ username });
+    if (existingUser) {
+      throw new nest.UnauthorizedException("username is already taken");
+    }
+    return this.db.users.save(this.db.users.create({
+      username,
+      password: await this.authManager.hashPassword(password)
+    }));
+  }
+
   @gql.Mutation("createUserToken")
   async createUserToken(
-    @gql.Args() username: string,
-    @gql.Args() password: string
+    @gql.Args("username") username: string,
+    @gql.Args("password") password: string
   ) {
     const user = await this.db.users.findOne({ username });
     if (!user) {
