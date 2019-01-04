@@ -10,9 +10,12 @@ import "reflect-metadata";
 
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./AppModule";
+import { LoggingService } from "./service/LoggingService";
 
 async function main() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: LoggingService
+  });
   app.enableCors();
   await app.listen(process.env.API_PORT || 8080);
 }
