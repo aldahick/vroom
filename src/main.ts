@@ -1,8 +1,20 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+// tslint:disable no-console
 
-async function bootstrap() {
+import "source-map-support/register";
+import { register } from "tsconfig-paths";
+register({
+    baseUrl: __dirname,
+    paths: {}
+});
+import "reflect-metadata";
+
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./AppModule";
+
+async function main() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  app.enableCors();
+  await app.listen(process.env.API_PORT || 8080);
 }
-bootstrap();
+
+main().catch(console.error);
