@@ -3,6 +3,10 @@ import { UserToken } from "./auth/UserToken";
 
 @orm.Entity("users")
 export class User {
+  constructor(init?: Partial<User>) {
+    Object.assign(this, init);
+  }
+
   @orm.PrimaryGeneratedColumn()
   id!: number;
 
