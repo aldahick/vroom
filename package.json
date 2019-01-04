@@ -5,7 +5,7 @@
   "author": "Alex Hicks <alex@alexhicks.net> (https://alexhicks.net)",
   "license": "MIT",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.json",
     "start": "tsc-watch --onSuccess \"node dist/main\"",
     "start:prod": "node dist/main.js",
     "lint": "tslint -p tsconfig.json -c tslint.json"
