@@ -1,8 +1,7 @@
 import * as gql from "@nestjs/graphql";
 import { LoggingService } from "service";
 
-@gql.Resolver("User")
-export class UsersResolver {
+export class HelloResolver {
   constructor(
     private logger: LoggingService
   ) { }
