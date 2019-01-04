@@ -1,6 +1,5 @@
 import * as nest from "@nestjs/common";
 import * as dotenv from "dotenv";
-
 import { LoggingModule, LoggingService } from "./LoggingService";
 
 @nest.Injectable()

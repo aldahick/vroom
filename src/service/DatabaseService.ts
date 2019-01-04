@@ -2,8 +2,7 @@ import * as nest from "@nestjs/common";
 import { InjectConnection } from "@nestjs/typeorm";
 import * as _ from "lodash";
 import * as orm from "typeorm";
-
-import * as models from "model";
+import * as models from "../model";
 
 @nest.Injectable()
 export class DatabaseService {

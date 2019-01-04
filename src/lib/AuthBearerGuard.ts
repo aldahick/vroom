@@ -2,7 +2,7 @@ import * as nest from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
 import * as express from "express";
 
-import { AuthManager } from "manager";
+import { AuthManager } from "../manager";
 
 @nest.Injectable()
 export class AuthBearerGuard implements nest.CanActivate {

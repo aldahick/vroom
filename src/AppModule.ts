@@ -2,10 +2,10 @@ import { Module } from "@nestjs/common";
 import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import GraphQLDateTime = require("graphql-type-datetime");
-import { OrmNamingStrategy } from "lib/OrmNamingStrategy";
-import * as models from "model";
-import * as resolvers from "resolver";
-import * as services from "service";
+import { OrmNamingStrategy } from "./lib/OrmNamingStrategy";
+import * as models from "./model";
+import * as resolvers from "./resolver";
+import * as services from "./service";
 
 @Module({
   imports: [

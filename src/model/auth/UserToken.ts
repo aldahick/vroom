@@ -4,6 +4,10 @@ import { User } from "../User";
 
 @orm.Entity("user_tokens")
 export class UserToken {
+  constructor(init?: Partial<UserToken>) {
+    Object.assign(this, init);
+  }
+
   @orm.PrimaryGeneratedColumn()
   id!: number;
 

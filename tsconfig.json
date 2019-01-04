@@ -13,7 +13,6 @@
     "strict": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
     "skipLibCheck": true
   },
   "exclude": ["node_modules", "dist"]

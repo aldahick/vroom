@@ -1,5 +1,5 @@
 import * as gql from "@nestjs/graphql";
-import { LoggingService } from "service";
+import { LoggingService } from "../service";
 
 export class HelloResolver {
   constructor(
