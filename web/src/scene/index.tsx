@@ -1,7 +1,7 @@
-import * as React from "react";
+import React from "react";
 
 export class IndexScene extends React.Component {
-  static readonly route = "";
+  static readonly route = "/";
   render() {
     return "Hello, world!";
   }

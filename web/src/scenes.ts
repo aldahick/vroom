@@ -1,1 +1,2 @@
-export * from "./scenes/index";
+export * from "./scene/index";
+export * from "./scene/register";
