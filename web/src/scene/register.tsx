@@ -1,23 +1,9 @@
 import { Grid } from "@material-ui/core";
-import gql from "graphql-tag";
 import React, { Component } from "react";
-import { Mutation, MutationFn } from "react-apollo";
+import { Mutation } from "react-apollo";
 import { Redirect } from "react-router";
 import { Form } from "../component/Form";
-
-const CREATE_USER = gql`
-mutation CreateUserWeb($username: String!, $password: String!) {
-  createUser(username: $username, password: $password) {
-    id
-  }
-}`;
-
-type CreateUserMutation = MutationFn<{
-  token: string
-}, {
-  username: string;
-  password: string;
-}>;
+import { CREATE_USER, CreateUserMutation } from "../graphql/createUser";
 
 type RegisterSceneState = {
   shouldRedirect: boolean;
