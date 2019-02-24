@@ -8,6 +8,7 @@ import { ApolloProvider } from "react-apollo";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "typeface-open-sans";
 import { UserState } from "./component";
+import PrivateRoute from "./component/auth/PrivateRoute";
 import * as scenes from "./scenes";
 
 const theme = createMuiTheme({
@@ -31,7 +32,11 @@ const client = new ApolloClient({
   link: authLink.concat(createHttpLink({
     uri: process.env.REACT_APP_API_URL || "http://localhost:8080/graphql"
   })),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  defaultOptions: {
+    query: { errorPolicy: "all" },
+    mutate: { errorPolicy: "all" }
+  }
 });
 
 export class App extends React.Component {
@@ -41,9 +46,10 @@ export class App extends React.Component {
         <MuiThemeProvider theme={theme}>
           <ApolloProvider client={client}>
             <Switch>
-              {Object.values(scenes).map(component =>
-                <Route key={component.route} exact path={component.route} component={component} />
-              )}
+              {Object.values(scenes).map(component => {
+                const ComponentRoute: typeof Route = component.isPrivate ? PrivateRoute as any : Route;
+                return <ComponentRoute key={component.route} exact path={component.route} component={component} />;
+              })}
             </Switch>
           </ApolloProvider>
         </MuiThemeProvider>

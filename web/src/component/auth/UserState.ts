@@ -11,4 +11,8 @@ export const UserState = new (class {
     sessionStorage.setItem(TOKEN_KEY, token);
     this.token = token;
   }
+
+  get isAuthenticated() {
+    return !!this.token;
+  }
 })();

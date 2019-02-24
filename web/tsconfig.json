@@ -18,7 +18,8 @@
       "dom.iterable",
       "esnext"
     ],
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "experimentalDecorators": true
   },
   "include": [
     "src"

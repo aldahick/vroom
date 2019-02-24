@@ -1,47 +1,42 @@
 import { Grid } from "@material-ui/core";
 import gql from "graphql-tag";
-import React, { Component } from "react";
+import React from "react";
 import { Mutation, MutationFn } from "react-apollo";
-import { Redirect } from "react-router";
+import { Redirect, RouteComponentProps } from "react-router";
+import { UserState } from "../component";
 import { Form } from "../component/Form";
+import "./login.css";
 
-const CREATE_USER = gql`
-mutation CreateUserWeb($username: String!, $password: String!) {
-  createUser(username: $username, password: $password) {
-    id
-  }
+const CREATE_USER_TOKEN = gql`
+mutation CreateUserTokenWeb($username: String!, $password: String!) {
+  token: createUserToken(username: $username, password: $password)
 }`;
 
-type CreateUserMutation = MutationFn<{
+type CreateUserTokenMutation = MutationFn<{
   token: string
 }, {
   username: string;
   password: string;
 }>;
 
-type RegisterSceneState = {
+type LoginSceneState = {
   shouldRedirect: boolean;
-  errorMessage: string;
+  errorMessage?: string;
 };
 
-export class RegisterScene extends Component<{}, RegisterSceneState> {
-  static readonly route = "/register";
+export class LoginScene extends React.Component<RouteComponentProps<{}>, LoginSceneState> {
+  static readonly route = "/login";
   static readonly isPrivate = false;
 
-  readonly state: RegisterSceneState = {
-    shouldRedirect: false,
-    errorMessage: ""
+  readonly state: LoginSceneState = {
+    shouldRedirect: UserState.isAuthenticated,
+    errorMessage: undefined
   };
 
-  submit = (createUser: CreateUserMutation) => async (fields: {
-    [key in "username" | "password" | "password2"]: string;
+  submit = (createUserToken: CreateUserTokenMutation) => async (fields: {
+    [key in "username" | "password"]: string;
   }) => {
-    if (fields.password !== fields.password2) {
-      return this.setState({
-        errorMessage: "Passwords do not match."
-      });
-    }
-    const res = await createUser({
+    const res = await createUserToken({
       variables: {
         username: fields.username,
         password: fields.password
@@ -57,44 +52,38 @@ export class RegisterScene extends Component<{}, RegisterSceneState> {
         throw new Error(res.errors.map(e => e.message).join("\n"));
       }
     } else if (res.data) {
+      UserState.setToken(res.data.token);
       this.setState({ shouldRedirect: true });
     }
-  }
+  };
 
   render() {
-    if (this.state.shouldRedirect) {
-      return <Redirect to="/login" />;
+    if (UserState.isAuthenticated || this.state.shouldRedirect) {
+      return <Redirect to={(this.props.location.state || { from: "/" }).from} />;
     }
     return (
       <Grid container justify="center">
         <Grid item xs={12} sm={9} md={6} lg={4}>
           <Grid container direction="column">
-            <Mutation mutation={CREATE_USER}>{createUser =>
+            <Mutation mutation={CREATE_USER_TOKEN}>{createUserToken => (
               <Form
                 fields={{
                   username: {
-                    placeholder: "Username",
-                    isRequired: true
+                    placeholder: "Username"
                   },
                   password: {
                     placeholder: "Password",
-                    type: "password",
-                    isRequired: true
-                  },
-                  password2: {
-                    placeholder: "Password Again",
-                    type: "password",
-                    isRequired: true
+                    type: "password"
                   }
                 }}
-                submitText="Register"
-                onSubmit={this.submit(createUser)}
+                submitText="Log In"
+                onSubmit={this.submit(createUserToken)}
               >
                 {this.state.errorMessage && <p className="error-message">
                   An error occurred: {this.state.errorMessage}
                 </p>}
               </Form>
-            }</Mutation>
+            )}</Mutation>
           </Grid>
         </Grid>
       </Grid>
