@@ -1,21 +1,24 @@
-import { Grid } from "@material-ui/core";
+import { Grid, withStyles } from "@material-ui/core";
+import { WithStyles } from "@material-ui/core/styles";
 import React from "react";
 import { Mutation } from "react-apollo";
 import { Redirect, RouteComponentProps } from "react-router";
 import { UserState } from "../component";
 import { Form } from "../component/Form";
 import { CREATE_USER_TOKEN, CreateUserTokenMutation } from "../graphql/createUserToken";
-import "./login.css";
 
 type LoginSceneState = {
   shouldRedirect: boolean;
   errorMessage?: string;
 };
 
-export class LoginScene extends React.Component<RouteComponentProps<{}>, LoginSceneState> {
-  static readonly route = "/login";
-  static readonly isPrivate = false;
+const styles = {
+  errorMessage: {
+    color: "red"
+  }
+};
 
+export const LoginScene = withStyles(styles)(class extends React.Component<WithStyles<typeof styles> & RouteComponentProps<{}>, LoginSceneState> {
   readonly state: LoginSceneState = {
     shouldRedirect: UserState.isAuthenticated,
     errorMessage: undefined
@@ -67,7 +70,7 @@ export class LoginScene extends React.Component<RouteComponentProps<{}>, LoginSc
                 submitText="Log In"
                 onSubmit={this.submit(createUserToken)}
               >
-                {this.state.errorMessage && <p className="error-message">
+                {this.state.errorMessage && <p className={this.props.classes.errorMessage}>
                   An error occurred: {this.state.errorMessage}
                 </p>}
               </Form>
@@ -77,4 +80,4 @@ export class LoginScene extends React.Component<RouteComponentProps<{}>, LoginSc
       </Grid>
     );
   }
-}
+});

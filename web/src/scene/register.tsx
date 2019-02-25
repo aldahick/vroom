@@ -1,4 +1,4 @@
-import { Grid } from "@material-ui/core";
+import { Grid, WithStyles } from "@material-ui/core";
 import React, { Component } from "react";
 import { Mutation } from "react-apollo";
 import { Redirect } from "react-router";
@@ -10,10 +10,13 @@ type RegisterSceneState = {
   errorMessage: string;
 };
 
-export class RegisterScene extends Component<{}, RegisterSceneState> {
-  static readonly route = "/register";
-  static readonly isPrivate = false;
+const styles = {
+  errorMessage: {
+    color: "red"
+  }
+};
 
+export class RegisterScene extends Component<WithStyles<typeof styles>, RegisterSceneState> {
   readonly state: RegisterSceneState = {
     shouldRedirect: false,
     errorMessage: ""

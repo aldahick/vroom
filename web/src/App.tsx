@@ -9,7 +9,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "typeface-open-sans";
 import { UserState } from "./component";
 import PrivateRoute from "./component/auth/PrivateRoute";
-import * as scenes from "./scenes";
+import scenes from "./scenes";
 
 const theme = createMuiTheme({
   typography: {
@@ -46,9 +46,9 @@ export class App extends React.Component {
         <MuiThemeProvider theme={theme}>
           <ApolloProvider client={client}>
             <Switch>
-              {Object.values(scenes).map(component => {
-                const ComponentRoute: typeof Route = component.isPrivate ? PrivateRoute as any : Route;
-                return <ComponentRoute key={component.route} exact path={component.route} component={component} />;
+              {Object.values(scenes).map(scene => {
+                const ComponentRoute: typeof Route = scene.isPrivate ? PrivateRoute as any : Route;
+                return <ComponentRoute key={scene.route} exact path={scene.route} component={scene.component} />;
               })}
             </Switch>
           </ApolloProvider>
