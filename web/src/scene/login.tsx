@@ -1,8 +1,9 @@
-import { Grid, withStyles } from "@material-ui/core";
-import { WithStyles } from "@material-ui/core/styles";
+import { Button, Grid, Typography, withStyles } from "@material-ui/core";
+import { createStyles, WithStyles } from "@material-ui/core/styles";
 import React from "react";
 import { Mutation } from "react-apollo";
 import { Redirect, RouteComponentProps } from "react-router";
+import { Link } from "react-router-dom";
 import { UserState } from "../component";
 import { Form } from "../component/Form";
 import { CREATE_USER_TOKEN, CreateUserTokenMutation } from "../graphql/createUserToken";
@@ -12,11 +13,17 @@ type LoginSceneState = {
   errorMessage?: string;
 };
 
-const styles = {
+const styles = createStyles({
   errorMessage: {
     color: "red"
+  },
+  registerContainer: {
+    paddingTop: "1em",
+    "& a": {
+      textDecoration: "none"
+    }
   }
-};
+});
 
 export const LoginScene = withStyles(styles)(class extends React.Component<WithStyles<typeof styles> & RouteComponentProps<{}>, LoginSceneState> {
   readonly state: LoginSceneState = {
@@ -52,6 +59,7 @@ export const LoginScene = withStyles(styles)(class extends React.Component<WithS
     if (UserState.isAuthenticated || this.state.shouldRedirect) {
       return <Redirect to={(this.props.location.state || { from: "/" }).from} />;
     }
+    const { classes } = this.props;
     return (
       <Grid container justify="center">
         <Grid item xs={12} sm={9} md={6} lg={4}>
@@ -75,6 +83,15 @@ export const LoginScene = withStyles(styles)(class extends React.Component<WithS
                 </p>}
               </Form>
             )}</Mutation>
+            <Grid container justify="center" className={classes.registerContainer}>
+              <Typography variant="h5">
+                <Link to="/register">
+                  <Button variant="raised" color="secondary">
+                    Register
+                  </Button>
+                </Link>
+              </Typography>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
