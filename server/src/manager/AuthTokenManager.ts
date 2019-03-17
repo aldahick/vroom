@@ -1,36 +1,40 @@
 import * as nest from "@nestjs/common";
-import * as crypto from "crypto";
-import * as dateFns from "date-fns";
-import * as randomstring from "randomstring";
+import * as jwt from "jsonwebtoken";
+import { User } from "../model";
+import { ConfigService, DatabaseService } from "../service";
 
-import { User, UserToken } from "../model";
-import { DatabaseService } from "../service";
+type AuthTokenPayload = {
+  subjectType: "user";
+  subjectId: number;
+};
 
 @nest.Injectable()
 export class AuthTokenManager {
   constructor(
+    private config: ConfigService,
     private db: DatabaseService
   ) { }
 
-  async createToken(user: User): Promise<UserToken> {
-    const raw = randomstring.generate(32);
-    const userToken = new UserToken({
-      user,
-      token: this.hashToken(raw)
-    });
-    return this.db.userTokens.save(userToken);
+  createToken(payload: AuthTokenPayload): Promise<string> {
+    return new Promise<string>((resolve, reject) =>
+      jwt.sign(payload, this.config.AUTH_SIGNING_SECRET, (err, token) =>
+        err ? reject(err) : resolve(token)
+      )
+    );
   }
 
-  async isTokenValid(token?: string | UserToken): Promise<boolean> {
-    if (typeof(token) === "string") {
-      token = await this.db.userTokens.findOne({
-        token: this.hashToken(token)
-      });
+  async getTokenSubject(payload: AuthTokenPayload): Promise<User | undefined> {
+    if (payload.subjectType === "user") {
+      return this.db.users.findOne({ id: payload.subjectId });
     }
-    return token && !dateFns.isAfter(token.createdAt, dateFns.addDays(new Date(), 1)) || false;
+    throw new nest.UnprocessableEntityException(`can't handle payload subject ${payload.subjectType}`);
   }
 
-  private hashToken(raw: string): string {
-    return crypto.createHash("sha256").update(raw).digest("hex");
+  getPayload(token: string): Promise<AuthTokenPayload> {
+    return new Promise<AuthTokenPayload>((resolve, reject) =>
+      jwt.verify(token, this.config.AUTH_SIGNING_SECRET, (err, payload) =>
+        err ? reject(err) : resolve(typeof(payload) === "string" ? JSON.parse(payload) : payload)
+      )
+    );
   }
 }

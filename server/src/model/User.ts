@@ -1,9 +1,9 @@
 import * as orm from "typeorm";
-import { UserToken } from "./auth/UserToken";
+import { MediaItem } from "./MediaItem";
 
 @orm.Entity("users")
 export class User {
-  constructor(init?: Partial<User>) {
+  constructor(init?: Pick<User, "username" | "password">) {
     Object.assign(this, init);
   }
 
@@ -16,6 +16,6 @@ export class User {
   @orm.Column()
   password!: string;
 
-  @orm.OneToMany(() => UserToken, ut => ut.user)
-  tokens?: UserToken[];
+  @orm.OneToMany(() => MediaItem, mi => mi.user)
+  mediaItems!: Promise<MediaItem[]>;
 }

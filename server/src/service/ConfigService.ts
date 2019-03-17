@@ -6,6 +6,8 @@ import { LoggingModule, LoggingService } from "./LoggingService";
 export class ConfigService {
   private static instance?: ConfigService;
 
+  @ConfigService.required() readonly AUTH_SIGNING_SECRET!: string;
+
   @ConfigService.required() readonly DB_TYPE!: string;
   @ConfigService.required() readonly DB_USER!: string;
   @ConfigService.required() readonly DB_HOST!: string;

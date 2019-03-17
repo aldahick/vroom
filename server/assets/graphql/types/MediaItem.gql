@@ -1,0 +1,9 @@
+type MediaItem {
+  id: Int!
+  user: User!
+  key: String!
+  mimeType: String!
+  createdAt: DateTime!
+  # `data` is explicitly excluded because it's difficult/silly to send/stream binary over GQL.
+  # REST route /media/:id/data is available to retrieve `MediaItem.data`.
+}
