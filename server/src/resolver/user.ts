@@ -44,15 +44,18 @@ export class UserResolver {
     if (!await this.authManager.isLoginValid(user, password)) {
       throw new nest.ForbiddenException();
     }
-    return this.authTokenManager.createToken(user);
+    return this.authTokenManager.createToken({
+      subjectId: user.id,
+      subjectType: "user"
+    });
   }
 
   @UseGuards(AuthBearerGuard)
   @gql.Query("user")
   async user(
     @gql.Context() context: GraphQLContext
-  ): Promise<User> {
-    return context.user!;
+  ): Promise<User | undefined> {
+    return context.user();
   }
 
   @gql.ResolveProperty("mediaItems")
@@ -60,7 +63,8 @@ export class UserResolver {
     @gql.Root() user: User,
     @gql.Context() context: GraphQLContext
   ): Promise<MediaItem[]> {
-    if (!context.user || context.user.id !== user.id) {
+    const currentUser = await context.user();
+    if (!currentUser || currentUser.id !== user.id) {
       return [];
     }
     return user.mediaItems;

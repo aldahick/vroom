@@ -1,4 +1,5 @@
 import * as nest from "@nestjs/common";
+import * as express from "express";
 import * as jwt from "jsonwebtoken";
 import { User } from "../model";
 import { ConfigService, DatabaseService } from "../service";
@@ -36,5 +37,16 @@ export class AuthTokenManager {
         err ? reject(err) : resolve(typeof(payload) === "string" ? JSON.parse(payload) : payload)
       )
     );
+  }
+
+  async getTokenFromRequest(req: express.Request): Promise<string | undefined> {
+    if (!(req && req.headers && req.headers.authorization)) {
+      return undefined;
+    }
+    const tokens = req.headers.authorization.split(" ");
+    if (tokens.length !== 2 || tokens[0].toLowerCase() !== "bearer") {
+      return undefined;
+    }
+    return tokens[1];
   }
 }

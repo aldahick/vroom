@@ -28,17 +28,4 @@ export class AuthBearerGuard implements nest.CanActivate {
     }
     return true;
   }
-
-  async getTokenFromRequest(
-    req: express.Request
-  ): Promise<UserToken | undefined> {
-    if (!(req && req.headers && req.headers.authorization)) {
-      return undefined;
-    }
-    const tokens = req.headers.authorization.split(" ");
-    if (tokens.length !== 2 || tokens[0].toLowerCase() !== "bearer") {
-      return undefined;
-    }
-    return this.tokenManager.getToken(tokens[1]);
-  }
 }

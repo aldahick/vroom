@@ -4,6 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import GraphQLDateTime = require("graphql-type-datetime");
 import { GraphQLContext } from "./lib/GraphQLContext";
 import { OrmNamingStrategy } from "./lib/OrmNamingStrategy";
+import { app } from "./main";
 import * as managers from "./manager";
 import * as models from "./model";
 import * as resolvers from "./resolver";
@@ -25,7 +26,7 @@ import * as services from "./service";
         resolvers: {
           DateTime: GraphQLDateTime
         },
-        context: ({ req }: any) => new GraphQLContext().init(req)
+        context: ({ req }: any) => app.get(GraphQLContext).init(req)
       })
     }),
     TypeOrmModule.forRootAsync({
@@ -48,6 +49,7 @@ import * as services from "./service";
     services.ConfigService,
     services.DatabaseService,
     services.LoggingService,
+    GraphQLContext,
     ...Object.values(managers),
     ...Object.values(resolvers)
   ]
