@@ -36,9 +36,8 @@ export class RegisterScene extends Component<WithStyles<typeof styles>, Register
         password: fields.password
       }
     });
-    if (!res) {
-      return;
-    } else if (res.errors) {
+    if (!res) return;
+    if (res.errors) {
       const statusCodes: number[] = res.errors.map(e => (e.message as any).statusCode);
       if (statusCodes.includes(404) || statusCodes.includes(403)) {
         this.setState({ errorMessage: "Invalid username or password." });

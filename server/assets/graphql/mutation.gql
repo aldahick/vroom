@@ -1,4 +1,9 @@
 type Mutation {
+  createMediaItem(
+    key: String!,
+    file: Upload,
+    data: String
+  ): MediaItem!
   createUser(username: String!, password: String!): User!
   createUserToken(username: String!, password: String!): String!
 }

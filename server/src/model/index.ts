@@ -1,2 +1,2 @@
+export * from "./MediaItem";
 export * from "./User";
-export * from "./auth";

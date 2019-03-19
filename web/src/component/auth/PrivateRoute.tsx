@@ -2,7 +2,7 @@ import React from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
 import { UserState } from "./UserState";
 
-export default ({ component, ...rest }: RouteProps) => {
+export const PrivateRoute: React.FunctionComponent<RouteProps> = ({ component, ...rest }) => {
   const Component = component as React.ComponentClass<any, any>;
   return (
     <Route

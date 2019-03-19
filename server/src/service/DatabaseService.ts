@@ -6,11 +6,11 @@ import * as models from "../model";
 
 @nest.Injectable()
 export class DatabaseService {
+  @DatabaseService.repository(models.MediaItem)
+  mediaItems!: orm.Repository<models.MediaItem>;
+
   @DatabaseService.repository(models.User)
   users!: orm.Repository<models.User>;
-
-  @DatabaseService.repository(models.UserToken)
-  userTokens!: orm.Repository<models.UserToken>;
 
   constructor(
     @InjectConnection()

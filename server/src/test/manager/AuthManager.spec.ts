@@ -12,6 +12,7 @@ describe("AuthManager", () => {
   describe("#isLoginValid()", () => {
     it("should return correctly for base case", async () => {
       expect(await authManager.isLoginValid(new User({
+        username: "foo",
         password: await authManager.hashPassword("foo")
       }), "foo")).to.equal(true);
     });

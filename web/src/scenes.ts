@@ -1,5 +1,6 @@
 import { IndexScene } from "./scene";
 import { LoginScene } from "./scene/login";
+import { MediaScene } from "./scene/media";
 import { RegisterScene } from "./scene/register";
 
 type SceneDefinition = {
@@ -23,6 +24,11 @@ const scenes: SceneDefinition[] = [
     component: RegisterScene,
     route: "/register",
     isPrivate: false
+  },
+  {
+    component: MediaScene,
+    route: "/media",
+    isPrivate: true
   }
 ];
 

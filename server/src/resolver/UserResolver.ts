@@ -1,7 +1,12 @@
 import * as nest from "@nestjs/common";
+import { UseGuards } from "@nestjs/common";
 import * as gql from "@nestjs/graphql";
+import { AuthBearerGuard } from "../lib/AuthBearerGuard";
+import { RequestContext } from "../lib/RequestContext";
 import { AuthTokenManager } from "../manager";
 import { AuthManager } from "../manager/AuthManager";
+import { User } from "../model";
+import { MediaItem } from "../model/MediaItem";
 import { DatabaseService } from "../service";
 
 @gql.Resolver("User")
@@ -16,7 +21,7 @@ export class UserResolver {
   async createUser(
     @gql.Args("username") username: string,
     @gql.Args("password") password: string
-  ) {
+  ): Promise<User> {
     const existingUser = await this.db.users.findOne({ username });
     if (existingUser) {
       throw new nest.UnauthorizedException("username is already taken");
@@ -31,7 +36,7 @@ export class UserResolver {
   async createUserToken(
     @gql.Args("username") username: string,
     @gql.Args("password") password: string
-  ) {
+  ): Promise<string> {
     const user = await this.db.users.findOne({ username });
     if (!user) {
       throw new nest.NotFoundException();
@@ -39,6 +44,29 @@ export class UserResolver {
     if (!await this.authManager.isLoginValid(user, password)) {
       throw new nest.ForbiddenException();
     }
-    return this.authTokenManager.createToken(user).then(ut => ut.token);
+    return this.authTokenManager.createToken({
+      subjectId: user.id,
+      subjectType: "user"
+    });
+  }
+
+  @UseGuards(AuthBearerGuard)
+  @gql.Query("user")
+  async user(
+    @gql.Context() context: RequestContext
+  ): Promise<User | undefined> {
+    return context.user();
+  }
+
+  @gql.ResolveProperty("mediaItems")
+  async mediaItems(
+    @gql.Root() user: User,
+    @gql.Context() context: RequestContext
+  ): Promise<MediaItem[]> {
+    const currentUser = await context.user();
+    if (!currentUser || currentUser.id !== user.id) {
+      return [];
+    }
+    return user.mediaItems;
   }
 }

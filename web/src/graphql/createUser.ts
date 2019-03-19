@@ -9,7 +9,7 @@ mutation CreateUserWeb($username: String!, $password: String!) {
 }`;
 
 export type CreateUserMutation = MutationFn<{
-  token: string
+  id: string;
 }, {
   username: string;
   password: string;
