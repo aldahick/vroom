@@ -21,8 +21,8 @@ export class MediaItem {
   @orm.Column()
   mimeType!: string;
 
-  @orm.Column({ type: "bytea" })
-  data!: Buffer;
+  @orm.Column({ type: "bytea", nullable: true })
+  data?: Buffer;
 
   @orm.CreateDateColumn()
   createdAt!: Date;

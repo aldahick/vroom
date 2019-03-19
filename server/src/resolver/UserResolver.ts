@@ -2,7 +2,7 @@ import * as nest from "@nestjs/common";
 import { UseGuards } from "@nestjs/common";
 import * as gql from "@nestjs/graphql";
 import { AuthBearerGuard } from "../lib/AuthBearerGuard";
-import { GraphQLContext } from "../lib/GraphQLContext";
+import { RequestContext } from "../lib/RequestContext";
 import { AuthTokenManager } from "../manager";
 import { AuthManager } from "../manager/AuthManager";
 import { User } from "../model";
@@ -53,7 +53,7 @@ export class UserResolver {
   @UseGuards(AuthBearerGuard)
   @gql.Query("user")
   async user(
-    @gql.Context() context: GraphQLContext
+    @gql.Context() context: RequestContext
   ): Promise<User | undefined> {
     return context.user();
   }
@@ -61,7 +61,7 @@ export class UserResolver {
   @gql.ResolveProperty("mediaItems")
   async mediaItems(
     @gql.Root() user: User,
-    @gql.Context() context: GraphQLContext
+    @gql.Context() context: RequestContext
   ): Promise<MediaItem[]> {
     const currentUser = await context.user();
     if (!currentUser || currentUser.id !== user.id) {

@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "typeface-open-sans";
 import { UserState } from "./component";
 import PrivateRoute from "./component/auth/PrivateRoute";
+import { Config } from "./Config";
 import scenes from "./scenes";
 
 const theme = createMuiTheme({
@@ -30,7 +31,7 @@ const authLink = setContext((_, { headers }) => ({
 
 const client = new ApolloClient({
   link: authLink.concat(createHttpLink({
-    uri: process.env.REACT_APP_API_URL || "http://localhost:8080/graphql"
+    uri: Config.apiUrl + "/graphql"
   })),
   cache: new InMemoryCache(),
   defaultOptions: {

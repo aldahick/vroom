@@ -1,2 +1,2 @@
-export * from "./hello";
-export * from "./user";
+export * from "./HelloResolver";
+export * from "./UserResolver";

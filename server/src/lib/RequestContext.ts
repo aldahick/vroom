@@ -1,11 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import * as nest from "@nestjs/common";
 import * as express from "express";
+import { app } from "../main";
 import { AuthTokenManager } from "../manager";
 import { User } from "../model";
 import { DatabaseService } from "../service";
 
-@Injectable()
-export class GraphQLContext {
+@nest.Injectable()
+export class RequestContext {
   public userId?: number;
 
   constructor(
@@ -13,7 +14,7 @@ export class GraphQLContext {
     readonly db: DatabaseService
   ) { }
 
-  async init(req: express.Request): Promise<GraphQLContext> {
+  async init(req: express.Request): Promise<RequestContext> {
     const token = await this.authTokenManager.getTokenFromRequest(req);
     if (!token) return this;
     const payload = await this.authTokenManager.getPayload(token);
@@ -27,4 +28,12 @@ export class GraphQLContext {
     if (!this.userId) return undefined;
     return this.db.users.findOne({ id: this.userId });
   }
+
+  static fromRequest(req: express.Request): Promise<RequestContext> {
+    return app.get(RequestContext).init(req);
+  }
+
+  static from = nest.createParamDecorator((_, req) =>
+    RequestContext.fromRequest(req)
+  );
 }
