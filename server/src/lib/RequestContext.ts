@@ -38,8 +38,4 @@ export class RequestContext {
   static fromRequest(req: express.Request): Promise<RequestContext> {
     return app.get(RequestContext).init(req);
   }
-
-  static from = nest.createParamDecorator((_, req) =>
-    RequestContext.fromRequest(req)
-  );
 }

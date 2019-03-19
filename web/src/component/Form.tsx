@@ -1,10 +1,11 @@
 import { Button, createStyles, Grid, Input, Typography, WithStyles, withStyles } from "@material-ui/core";
 import { InputProps } from "@material-ui/core/Input";
-import * as _ from "lodash";
+import _ from "lodash";
 import React, { Fragment } from "react";
 
 type FieldDefinition = {
   defaultValue?: string;
+  /** default: false */
   isRequired?: boolean;
   placeholder?: string;
   type?: string;
@@ -19,6 +20,7 @@ interface FormProps<FieldKey extends string> {
 }
 
 interface FormState<FieldKey extends string> {
+  /** only contains changed values */
   fieldValues: { [key in FieldKey]?: string | File };
 }
 
@@ -68,7 +70,7 @@ export const Form = withStyles(styles)(class <FieldKey extends string> extends R
     if (_.map(this.props.fields, (field, key: FieldKey) =>
       !field.isRequired || !!this.state.fieldValues[key]
     ).some(v => !v)) { return; }
-    const result = this.props.onSubmit(this.state.fieldValues);
+    const result = this.props.onSubmit(_.cloneDeep(this.state.fieldValues));
     if (result instanceof Promise) {
       result.catch(console.error);
     }
@@ -105,12 +107,12 @@ export const Form = withStyles(styles)(class <FieldKey extends string> extends R
     return (
       <Fragment>
         {errorMessage && (
-          <Typography variant="subheading" color="error" align="center">
+          <Typography variant="subtitle2" color="error" align="center">
             {errorMessage}
           </Typography>
         )}
         {successMessage && (
-          <Typography variant="subheading" color="primary" align="center">
+          <Typography variant="subtitle2" color="primary" align="center">
             {successMessage}
           </Typography>
         )}

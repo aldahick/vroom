@@ -1,6 +1,7 @@
 import * as nest from "@nestjs/common";
 import { UseGuards } from "@nestjs/common";
 import * as gql from "@nestjs/graphql";
+import * as _ from "lodash";
 import { AuthBearerGuard } from "../lib/AuthBearerGuard";
 import { RequestContext } from "../lib/RequestContext";
 import { AuthTokenManager } from "../manager";
@@ -48,6 +49,24 @@ export class UserResolver {
       subjectId: user.id,
       subjectType: "user"
     });
+  }
+
+  @UseGuards(AuthBearerGuard)
+  @gql.Mutation("updateUserSettings")
+  async updateUserSettings(
+    @gql.Context() context: RequestContext,
+    @gql.Args() fields: {[key in "username" | "password"]?: string}
+  ): Promise<User> {
+    if (!context.userId) throw new nest.ForbiddenException();
+    fields = _.pick(fields, ["username", "password"]);
+    if (Object.keys(fields).length === 0) {
+      throw new nest.BadRequestException("No fields passed.");
+    }
+    if (fields.password) {
+      fields.password = await this.authManager.hashPassword(fields.password);
+    }
+    await this.db.users.update(context.userId, fields);
+    return (await context.user())!;
   }
 
   @UseGuards(AuthBearerGuard)

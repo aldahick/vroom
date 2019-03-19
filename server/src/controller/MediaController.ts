@@ -54,6 +54,6 @@ export class MediaController {
         "Content-Type": mediaItem.mimeType
       });
     }
-  fs.createReadStream(filename, { start, end }).pipe(res);
+    fs.createReadStream(filename, { start, end }).pipe(res);
   }
 }

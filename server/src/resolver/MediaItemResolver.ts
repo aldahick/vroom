@@ -20,7 +20,7 @@ export class MediaItemResolver {
   @UseGuards(AuthBearerGuard)
   @gql.Mutation("createMediaItem")
   async create(
-    @RequestContext.from() context: RequestContext,
+    @gql.Context() context: RequestContext,
     @gql.Args("key") key: string,
     @gql.Args("file") file?: GraphQLUpload,
     @gql.Args("data") data?: string
@@ -55,7 +55,7 @@ export class MediaItemResolver {
 
   @gql.ResolveProperty("token")
   async token(
-    @RequestContext.from() context: RequestContext,
+    @gql.Context() context: RequestContext,
     @gql.Root() root: MediaItem
   ): Promise<string> {
     const user = await context.user();

@@ -32,6 +32,6 @@ export class MediaItem {
   createdAt!: Date;
 
   get fileKey(): string {
-    return createHash("md5").update(this.key).digest("hex") + ".data";
+    return createHash("md5").update(`${this.userId}:${this.key}`).digest("hex") + ".data";
   }
 }

@@ -65,6 +65,7 @@ export const LoginScene = withStyles(styles)(class extends React.Component<WithS
           <Grid container direction="column">
             <Mutation mutation={CREATE_USER_TOKEN}>{createUserToken => (
               <Form
+                errorMessage={this.state.errorMessage}
                 fields={{
                   username: {
                     placeholder: "Username"
@@ -76,16 +77,12 @@ export const LoginScene = withStyles(styles)(class extends React.Component<WithS
                 }}
                 submitText="Log In"
                 onSubmit={this.submit(createUserToken)}
-              >
-                {this.state.errorMessage && <p className={this.props.classes.errorMessage}>
-                  An error occurred: {this.state.errorMessage}
-                </p>}
-              </Form>
+              />
             )}</Mutation>
             <Grid container justify="center" className={classes.registerContainer}>
               <Typography variant="h5">
                 <Link to="/register">
-                  <Button variant="raised" color="secondary">
+                  <Button variant="contained" color="secondary">
                     Register
                   </Button>
                 </Link>

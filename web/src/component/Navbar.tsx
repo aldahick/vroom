@@ -15,7 +15,8 @@ const NAVBAR_LINKS = {
     "Hello!": "/"
   },
   authRequired: {
-    "Manage Media": "/media"
+    "Manage Media": "/media",
+    "Settings": "/settings"
   }
 };
 

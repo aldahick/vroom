@@ -6,4 +6,5 @@ type Mutation {
   ): MediaItem!
   createUser(username: String!, password: String!): User!
   createUserToken(username: String!, password: String!): String!
+  updateUserSettings(username: String, password: String): User!
 }
