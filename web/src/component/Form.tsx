@@ -12,6 +12,7 @@ type FieldDefinition = {
 
 interface FormProps<FieldKey extends string> {
   errorMessage?: string;
+  successMessage?: string;
   fields: { [key in FieldKey]: FieldDefinition };
   onSubmit(fieldValues: { [key in FieldKey]?: string | File }): Promise<void> | void;
   submitText?: string;
@@ -100,13 +101,17 @@ export const Form = withStyles(styles)(class <FieldKey extends string> extends R
   }
 
   render() {
-    const { children, classes, errorMessage, fields, submitText } = this.props;
-    console.log(errorMessage);
+    const { children, classes, errorMessage, successMessage, fields, submitText } = this.props;
     return (
       <Fragment>
         {errorMessage && (
           <Typography variant="subheading" color="error" align="center">
             {errorMessage}
+          </Typography>
+        )}
+        {successMessage && (
+          <Typography variant="subheading" color="primary" align="center">
+            {successMessage}
           </Typography>
         )}
         {children}

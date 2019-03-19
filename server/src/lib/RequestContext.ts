@@ -9,6 +9,7 @@ import { DatabaseService } from "../service";
 export class RequestContext {
   public req!: express.Request;
   public userId?: number;
+  private mUser?: User;
 
   constructor(
     readonly authTokenManager: AuthTokenManager,
@@ -28,7 +29,10 @@ export class RequestContext {
 
   async user(): Promise<User | undefined> {
     if (!this.userId) return undefined;
-    return this.db.users.findOne({ id: this.userId });
+    if (!this.mUser) {
+      return this.db.users.findOne({ id: this.userId });
+    }
+    return this.mUser;
   }
 
   static fromRequest(req: express.Request): Promise<RequestContext> {

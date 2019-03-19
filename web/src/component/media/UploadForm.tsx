@@ -5,6 +5,7 @@ import { Form } from "../Form";
 
 interface UploadFormState {
   errorMessage?: string;
+  successMessage?: string;
 }
 
 export const UploadForm = class extends React.Component<{}, UploadFormState> {
@@ -26,7 +27,8 @@ export const UploadForm = class extends React.Component<{}, UploadFormState> {
       });
     } else if (res.data) {
       this.setState({
-        errorMessage: undefined
+        errorMessage: undefined,
+        successMessage: "Uploaded successfully."
       });
     }
   };
@@ -36,6 +38,7 @@ export const UploadForm = class extends React.Component<{}, UploadFormState> {
       <Mutation mutation={CREATE_MEDIA_ITEM}>
         {createMediaItem => (
           <Form
+            successMessage={this.state.successMessage}
             errorMessage={this.state.errorMessage}
             fields={{
               key: {

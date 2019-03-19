@@ -2,6 +2,7 @@ import * as nest from "@nestjs/common";
 import { UseGuards } from "@nestjs/common";
 import * as gql from "@nestjs/graphql";
 import * as fs from "fs-extra";
+import * as jwt from "jsonwebtoken";
 import * as path from "path";
 import { AuthBearerGuard } from "../lib/AuthBearerGuard";
 import { RequestContext } from "../lib/RequestContext";
@@ -50,5 +51,22 @@ export class MediaItemResolver {
       throw new nest.BadRequestException("Must send file or data");
     }
     return this.db.mediaItems.save(mediaItem);
+  }
+
+  @gql.ResolveProperty("token")
+  async token(
+    @RequestContext.from() context: RequestContext,
+    @gql.Root() root: MediaItem
+  ): Promise<string> {
+    const user = await context.user();
+    if (!user || user.id !== root.userId) throw new nest.ForbiddenException(`Not your MediaItem`);
+    return new Promise<string>((resolve, reject) =>
+      jwt.sign({
+        subjectId: root.id,
+        subjectType: "media.access"
+      }, this.config.AUTH_SIGNING_SECRET, (err: Error, token: string) =>
+        err ? reject(err) : resolve(token)
+      )
+    );
   }
 }
