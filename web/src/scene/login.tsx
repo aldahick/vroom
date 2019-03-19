@@ -25,7 +25,7 @@ const styles = createStyles({
   }
 });
 
-export const LoginScene = withStyles(styles)(class extends React.Component<WithStyles<typeof styles> & RouteComponentProps<{}>, LoginSceneState> {
+export const LoginScene = withStyles(styles)(class extends React.Component<WithStyles<typeof styles> & RouteComponentProps, LoginSceneState> {
   readonly state: LoginSceneState = {
     shouldRedirect: UserState.isAuthenticated,
     errorMessage: undefined

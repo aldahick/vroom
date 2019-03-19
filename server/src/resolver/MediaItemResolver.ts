@@ -33,7 +33,7 @@ export class MediaItemResolver {
     const mediaItem = new MediaItem({
       key, userId: user.id,
       mimeType: file ? file.mimetype : "text/plain",
-      data: file ? undefined : new Buffer(data || "")
+      data: file ? undefined : Buffer.from(data || "")
     });
     if (file) {
       if (!this.config.MEDIA_DIR) throw new nest.ForbiddenException("No MEDIA_DIR is set.");

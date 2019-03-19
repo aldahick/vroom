@@ -1,4 +1,5 @@
 import { createStyles, Grid, MenuItem, Select, Typography, withStyles, WithStyles } from "@material-ui/core";
+import _ from "lodash";
 import React, { Fragment } from "react";
 import { Query } from "react-apollo";
 import { GET_USER_MEDIA_ITEMS, GetUserMediaItemsResult } from "../../graphql/getUserMediaItems";
@@ -34,7 +35,7 @@ export const ContentList = withStyles(styles)(class extends React.Component<With
                     </Typography>
                   );
                 }
-                const mediaItems = data.user.mediaItems.sort((a, b) => a.key.localeCompare(b.key));
+                const mediaItems = _.sortBy(data.user.mediaItems, "key");
                 if (mediaItems.length === 0) {
                   return <Typography color="error">No media items were found!</Typography>;
                 }

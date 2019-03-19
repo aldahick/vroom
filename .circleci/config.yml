@@ -1,14 +1,22 @@
 version: 2
+workflows:
+  version: 2
+  server_and_web:
+    jobs:
+      - server
+      - web
 jobs:
-  build:
+  server:
     docker:
       - image: circleci/node:10
+    working_directory: ~/repo/server
     steps:
-      - checkout
+      - checkout:
+          path: ~/repo
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}
-          - v1-dependencies-
+          - v1-dependencies-server-{{ checksum "package-lock.json" }}
+          - v1-dependencies-server-
       - run:
           name: Install NPM modules
           command: npm install
@@ -25,3 +33,27 @@ jobs:
       - run:
           name: Test
           command: npm run test:ci
+  web:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo/web
+    steps:
+      - checkout:
+          path: ~/repo
+      - restore_cache:
+          keys:
+          - v1-dependencies-web-{{ checksum "package-lock.json" }}
+          - v1-dependencies-web-
+      - run:
+          name: Install NPM modules
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+      - run:
+          name: Compile
+          command: npm run build
+      - run:
+          name: Lint
+          command: npm run lint

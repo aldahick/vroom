@@ -51,7 +51,7 @@ export const Form = withStyles(styles)(class <FieldKey extends string> extends R
       fieldValues: {
         ...this.state.fieldValues,
         [field]: (evt.target.files && evt.target.files.length > 0)
-          ? evt.target.files![0]
+          ? evt.target.files[0]
           : undefined
       }
     });
