@@ -7,6 +7,7 @@ import { DatabaseService } from "../service";
 
 @nest.Injectable()
 export class RequestContext {
+  public req!: express.Request;
   public userId?: number;
 
   constructor(
@@ -15,6 +16,7 @@ export class RequestContext {
   ) { }
 
   async init(req: express.Request): Promise<RequestContext> {
+    this.req = req;
     const token = await this.authTokenManager.getTokenFromRequest(req);
     if (!token) return this;
     const payload = await this.authTokenManager.getPayload(token);

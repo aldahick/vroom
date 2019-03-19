@@ -17,6 +17,8 @@ export class ConfigService {
 
   @ConfigService.optional() readonly ENV: string = "development";
 
+  @ConfigService.optional() readonly MEDIA_DIR?: string;
+
   constructor(
     private logger: LoggingService
   ) {

@@ -4,7 +4,7 @@ import React from "react";
 import { Mutation } from "react-apollo";
 import { Redirect, RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
-import { UserState } from "../component";
+import { UserState } from "../component/auth";
 import { Form } from "../component/Form";
 import { CREATE_USER_TOKEN, CreateUserTokenMutation } from "../graphql/createUserToken";
 
@@ -40,9 +40,8 @@ export const LoginScene = withStyles(styles)(class extends React.Component<WithS
         password: fields.password
       }
     });
-    if (!res) {
-      return;
-    } else if (res.errors) {
+    if (!res) return;
+    if (res.errors) {
       const statusCodes: number[] = res.errors.map(e => (e.message as any).statusCode);
       if (statusCodes.includes(404) || statusCodes.includes(403)) {
         this.setState({ errorMessage: "Invalid username or password." });

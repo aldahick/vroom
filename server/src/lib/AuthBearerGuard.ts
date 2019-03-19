@@ -18,6 +18,7 @@ export class AuthBearerGuard implements nest.CanActivate {
     }
     const tokens = req.headers.authorization.split(" ");
     if (tokens.length !== 2 || tokens[0].toLowerCase() !== "bearer") {
+      this.logger.log(tokens);
       return false;
     }
     try {
