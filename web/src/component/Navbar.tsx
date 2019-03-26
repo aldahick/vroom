@@ -16,6 +16,7 @@ const NAVBAR_LINKS = {
   },
   authRequired: {
     "Manage Media": "/media",
+    "Timesheet": "/timesheet",
     "Settings": "/settings"
   }
 };

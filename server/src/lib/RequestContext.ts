@@ -30,7 +30,7 @@ export class RequestContext {
   async user(): Promise<User | undefined> {
     if (!this.userId) return undefined;
     if (!this.mUser) {
-      return this.db.users.findOne({ id: this.userId });
+      this.mUser = await this.db.users.findOne({ id: this.userId });
     }
     return this.mUser;
   }

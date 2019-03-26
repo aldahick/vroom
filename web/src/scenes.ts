@@ -4,6 +4,7 @@ import { LogoutScene } from "./scene/logout";
 import { MediaScene } from "./scene/media";
 import { RegisterScene } from "./scene/register";
 import { SettingsScene } from "./scene/settings";
+import { TimesheetScene } from "./scene/timesheet";
 
 type SceneDefinition = {
   component: React.ComponentType<any>;
@@ -40,6 +41,11 @@ const scenes: SceneDefinition[] = [
   {
     component: SettingsScene,
     route: "/settings",
+    isPrivate: true
+  },
+  {
+    component: TimesheetScene,
+    route: "/timesheet",
     isPrivate: true
   }
 ];

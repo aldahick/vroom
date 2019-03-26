@@ -4,9 +4,9 @@ import * as gql from "@nestjs/graphql";
 import * as _ from "lodash";
 import { AuthBearerGuard } from "../lib/AuthBearerGuard";
 import { RequestContext } from "../lib/RequestContext";
-import { AuthTokenManager } from "../manager";
+import { AuthTokenManager, TimesheetManager } from "../manager";
 import { AuthManager } from "../manager/AuthManager";
-import { User } from "../model";
+import { TimesheetEntry, User } from "../model";
 import { MediaItem } from "../model/MediaItem";
 import { DatabaseService } from "../service";
 
@@ -15,7 +15,8 @@ export class UserResolver {
   constructor(
     private authManager: AuthManager,
     private authTokenManager: AuthTokenManager,
-    private db: DatabaseService
+    private db: DatabaseService,
+    private timesheetManager: TimesheetManager
   ) { }
 
   @gql.Mutation("createUser")
@@ -77,6 +78,14 @@ export class UserResolver {
     return context.user();
   }
 
+  @gql.ResolveProperty("isClockedIn")
+  async isClockedIn(
+    @gql.Root() user: User
+  ) {
+    const lastEntry = await this.timesheetManager.getLatestEntry(user);
+    return !(lastEntry && lastEntry.end);
+  }
+
   @gql.ResolveProperty("mediaItems")
   async mediaItems(
     @gql.Root() user: User,
@@ -88,4 +97,17 @@ export class UserResolver {
     }
     return user.mediaItems;
   }
+
+  @gql.ResolveProperty("timesheets")
+  async timesheets(
+    @gql.Root() user: User,
+    @gql.Context() context: RequestContext
+  ): Promise<TimesheetEntry[]> {
+    const currentUser = await context.user();
+    if (!currentUser || currentUser.id !== user.id) {
+      return [];
+    }
+    return user.timesheetEntries;
+  }
+
 }

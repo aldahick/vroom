@@ -1,5 +1,6 @@
 import * as orm from "typeorm";
 import { MediaItem } from "./MediaItem";
+import { TimesheetEntry } from "./TimesheetEntry";
 
 @orm.Entity("users")
 export class User {
@@ -18,4 +19,7 @@ export class User {
 
   @orm.OneToMany(() => MediaItem, mi => mi.user)
   mediaItems!: Promise<MediaItem[]>;
+
+  @orm.OneToMany(() => TimesheetEntry, te => te.user)
+  timesheetEntries!: Promise<TimesheetEntry[]>;
 }
