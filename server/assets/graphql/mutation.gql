@@ -7,5 +7,6 @@ type Mutation {
   createUser(username: String!, password: String!): User!
   createUserToken(username: String!, password: String!): String!
   markTimesheet: TimesheetEntry!
+  reloadCongressMembers: Boolean!
   updateUserSettings(username: String, password: String): User!
 }

@@ -1,4 +1,5 @@
 import { IndexScene } from "./scene";
+import { CongressScene } from "./scene/gov/congress";
 import { LoginScene } from "./scene/login";
 import { LogoutScene } from "./scene/logout";
 import { MediaScene } from "./scene/media";
@@ -46,6 +47,11 @@ const scenes: SceneDefinition[] = [
   {
     component: TimesheetScene,
     route: "/timesheet",
+    isPrivate: true
+  },
+  {
+    component: CongressScene,
+    route: "/gov/congress",
     isPrivate: true
   }
 ];

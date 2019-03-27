@@ -1,0 +1,38 @@
+type CongressMember {
+  _id: String!
+  name: CongressMemberName!
+  birthday: DateTime!
+  gender: Gender
+  terms: [CongressMemberTerm]!
+
+  party: CongressParty!
+  state: String!
+  type: CongressMemberTermType!
+}
+
+type CongressMemberName {
+  first: String!
+  last: String!
+  full: String!
+}
+
+type CongressMemberTerm {
+  type: CongressMemberTermType!
+  start: DateTime!
+  end: DateTime!
+  state: String!
+  district: Int
+  party: CongressParty!
+  url: String
+}
+
+enum CongressParty {
+  DEMOCRAT,
+  INDEPENDENT,
+  REPUBLICAN
+}
+
+enum CongressMemberTermType {
+  HOUSE,
+  SENATE
+}

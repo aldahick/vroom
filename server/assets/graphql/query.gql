@@ -1,4 +1,5 @@
 type Query {
+  congressMembers: [CongressMember]!
   hello: String!
   user: User!
 }
