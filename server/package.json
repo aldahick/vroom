@@ -11,7 +11,8 @@
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "test": "tsc && npm run test:ci",
     "test:ci": "mocha --recursive dist/test",
-    "test:watch": "tsc-watch --onSuccess \"npm run test:ci\""
+    "test:watch": "tsc-watch --onSuccess \"npm run test:ci\"",
+    "generate:graphql": "graphql-codegen --config codegen.graphql.yml"
   },
   "dependencies": {
     "@nestjs/common": "^5.7.4",
@@ -39,6 +40,10 @@
   },
   "devDependencies": {
     "@aldahick/tslint-rules": "0.0.2",
+    "@graphql-codegen/cli": "^1.0.6",
+    "@graphql-codegen/typescript": "1.0.6",
+    "@graphql-codegen/typescript-operations": "1.0.6",
+    "@graphql-codegen/typescript-resolvers": "1.0.6",
     "@types/bcrypt": "^3.0.0",
     "@types/chai": "^4.1.7",
     "@types/dotenv": "^6.1.0",

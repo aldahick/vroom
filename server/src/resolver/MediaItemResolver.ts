@@ -4,11 +4,11 @@ import * as gql from "@nestjs/graphql";
 import * as fs from "fs-extra";
 import * as jwt from "jsonwebtoken";
 import * as path from "path";
+import { MutationCreateMediaItemArgs } from "../generated/graphql";
 import { AuthBearerGuard } from "../lib/AuthBearerGuard";
 import { RequestContext } from "../lib/RequestContext";
 import { MediaItem } from "../model/MediaItem";
 import { ConfigService, DatabaseService } from "../service";
-import { GraphQLUpload } from "../types/GraphQLUpload";
 
 @gql.Resolver("MediaItem")
 export class MediaItemResolver {
@@ -21,9 +21,7 @@ export class MediaItemResolver {
   @gql.Mutation("createMediaItem")
   async create(
     @gql.Context() context: RequestContext,
-    @gql.Args("key") key: string,
-    @gql.Args("file") file?: GraphQLUpload,
-    @gql.Args("data") data?: string
+    @gql.Args() { key, file, data }: MutationCreateMediaItemArgs
   ): Promise<MediaItem | undefined> {
     const user = await context.user();
     if (!user) return;

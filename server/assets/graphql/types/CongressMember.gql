@@ -3,7 +3,7 @@ type CongressMember {
   name: CongressMemberName!
   birthday: DateTime!
   gender: Gender
-  terms: [CongressMemberTerm]!
+  terms: [CongressMemberTerm!]!
 
   party: CongressParty!
   state: String!

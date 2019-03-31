@@ -1,6 +1,7 @@
 import React from "react";
 import { Mutation } from "react-apollo";
 import { CREATE_MEDIA_ITEM, CreateMediaItem } from "../../graphql/createMediaItem";
+import { File } from "../../graphql/types";
 import { Form } from "../Form";
 
 interface UploadFormState {

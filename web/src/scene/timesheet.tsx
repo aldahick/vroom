@@ -5,7 +5,7 @@ import React, { Fragment } from "react";
 import { Mutation, Query } from "react-apollo";
 import { GET_USER_TIMESHEETS, GetUserTimesheetsResult } from "../graphql/getUserTimesheets";
 import { MARK_TIMESHEET, MarkTimesheetMutation } from "../graphql/markTimesheet";
-import { TimesheetEntry } from "../graphql/types/TimesheetEntry";
+import { TimesheetEntry } from "../graphql/types";
 import { callMutation } from "../util/graphql";
 
 const styles = createStyles({

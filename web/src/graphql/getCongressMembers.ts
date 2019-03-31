@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import { CongressMember } from "./types/CongressMember";
+import { CongressMember } from "./types";
 
 export const GET_CONGRESS_MEMBERS = gql`
 query GetCongressMembersWeb {
