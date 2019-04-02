@@ -1,5 +1,9 @@
 type Query {
-  congressMembers: [CongressMember!]!
+  congressMembers(
+    limit: Int,
+    offset: Int,
+    query: String
+  ): PagedCongressMembers!
   hello: String!
   user: User!
 }

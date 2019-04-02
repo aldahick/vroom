@@ -1,17 +1,19 @@
 import { UseGuards } from "@nestjs/common";
 import * as gql from "@nestjs/graphql";
 import * as _ from "lodash";
-import { CongressMember } from "../../collection/CongressMember";
+import { CongressMember, CongressParty } from "../../collection/CongressMember";
+import { QueryCongressMembersArgs } from "../../generated/graphql";
 import { AuthBearerGuard } from "../../lib/AuthBearerGuard";
 import { app } from "../../main";
-import { CongressMemberService, MongoService } from "../../service";
+import { CongressMemberService, MongoService, StateNameService } from "../../service";
 import { CongressMemberTermResolver } from "./CongressMemberTermResolver";
 
 @gql.Resolver("CongressMember")
 export class CongressMemberResolver {
   constructor(
     private congressMemberService: CongressMemberService,
-    private db: MongoService
+    private db: MongoService,
+    private stateNameService: StateNameService
   ) { }
 
   @gql.ResolveProperty("party")
@@ -33,8 +35,27 @@ export class CongressMemberResolver {
 
   @UseGuards(AuthBearerGuard)
   @gql.Query("congressMembers")
-  async congressMembers(): Promise<CongressMember[]> {
-    return this.db.congressMembers.find().toArray();
+  async congressMembers(
+    @gql.Args() { query: searchTerm, limit, offset }: QueryCongressMembersArgs
+  ): Promise<{
+    total: number;
+    members: CongressMember[];
+  }> {
+    let query = this.db.congressMembers.find().sort({
+      "name.last": 1
+    });
+    if (searchTerm) {
+      query = query.filter(this.getFilterQuery(searchTerm));
+    }
+    // no reason to have limit without offset
+    if (offset !== undefined && limit) {
+      query = query.skip(offset).limit(limit);
+    }
+    const total = await query.clone().count(false);
+    return {
+      total,
+      members: await query.toArray()
+    };
   }
 
   @UseGuards(AuthBearerGuard)
@@ -63,5 +84,33 @@ export class CongressMemberResolver {
     await this.db.congressMembers.deleteMany({});
     await this.db.congressMembers.insertMany(members);
     return true;
+  }
+
+  private getFilterQuery(searchTerm: string) {
+    const partyNames = Object.values(CongressParty).map(s => s.toLowerCase());
+    if (partyNames.includes(searchTerm.toLowerCase())) {
+      return {
+        "terms.party": _.startCase(searchTerm)
+      };
+    } else if (searchTerm.toLowerCase() === "house") {
+      return {
+        "terms.type": "rep"
+      };
+    } else if (searchTerm.toLowerCase() === "senate") {
+      return {
+        "terms.type": "sen"
+      };
+    } else {
+      const stateId = this.stateNameService.getIdFromName(searchTerm.toLowerCase());
+      if (stateId) {
+        return {
+          "terms.state": stateId
+        };
+      } else {
+        return {
+          "name.full": new RegExp(searchTerm, "i")
+        };
+      }
+    }
   }
 }

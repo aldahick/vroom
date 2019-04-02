@@ -16,7 +16,7 @@ export type CongressMember = {
   name: CongressMemberName;
   birthday: Scalars["DateTime"];
   gender?: Maybe<Gender>;
-  terms: Array<Maybe<CongressMemberTerm>>;
+  terms: Array<CongressMemberTerm>;
   party: CongressParty;
   state: Scalars["String"];
   type: CongressMemberTermType;
@@ -99,11 +99,22 @@ export type MutationUpdateUserSettingsArgs = {
   password?: Maybe<Scalars["String"]>;
 };
 
+export type PagedCongressMembers = {
+  total: Scalars["Int"];
+  members: Array<CongressMember>;
+};
+
 export type Query = {
-  congressMembers: Array<Maybe<CongressMember>>;
+  congressMembers: PagedCongressMembers;
   hello: Scalars["String"];
   user: User;
   temp__?: Maybe<Scalars["Boolean"]>;
+};
+
+export type QueryCongressMembersArgs = {
+  limit?: Maybe<Scalars["Int"]>;
+  offset?: Maybe<Scalars["Int"]>;
+  query?: Maybe<Scalars["String"]>;
 };
 
 export type TimesheetEntry = {
@@ -117,8 +128,8 @@ export type User = {
   id: Scalars["Int"];
   username: Scalars["String"];
   isClockedIn: Scalars["Boolean"];
-  mediaItems: Array<Maybe<MediaItem>>;
-  timesheets: Array<Maybe<TimesheetEntry>>;
+  mediaItems: Array<MediaItem>;
+  timesheets: Array<TimesheetEntry>;
 };
 
 import {
@@ -202,7 +213,7 @@ export type CongressMemberResolvers<
   name?: Resolver<CongressMemberName, ParentType, Context>;
   birthday?: Resolver<Scalars["DateTime"], ParentType, Context>;
   gender?: Resolver<Maybe<Gender>, ParentType, Context>;
-  terms?: Resolver<Array<Maybe<CongressMemberTerm>>, ParentType, Context>;
+  terms?: Resolver<Array<CongressMemberTerm>, ParentType, Context>;
   party?: Resolver<CongressParty, ParentType, Context>;
   state?: Resolver<Scalars["String"], ParentType, Context>;
   type?: Resolver<CongressMemberTermType, ParentType, Context>;
@@ -274,8 +285,21 @@ export type MutationResolvers<Context = any, ParentType = Mutation> = {
   >;
 };
 
+export type PagedCongressMembersResolvers<
+  Context = any,
+  ParentType = PagedCongressMembers
+> = {
+  total?: Resolver<Scalars["Int"], ParentType, Context>;
+  members?: Resolver<Array<CongressMember>, ParentType, Context>;
+};
+
 export type QueryResolvers<Context = any, ParentType = Query> = {
-  congressMembers?: Resolver<Array<Maybe<CongressMember>>, ParentType, Context>;
+  congressMembers?: Resolver<
+    PagedCongressMembers,
+    ParentType,
+    Context,
+    QueryCongressMembersArgs
+  >;
   hello?: Resolver<Scalars["String"], ParentType, Context>;
   user?: Resolver<User, ParentType, Context>;
   temp__?: Resolver<Maybe<Scalars["Boolean"]>, ParentType, Context>;
@@ -300,8 +324,8 @@ export type UserResolvers<Context = any, ParentType = User> = {
   id?: Resolver<Scalars["Int"], ParentType, Context>;
   username?: Resolver<Scalars["String"], ParentType, Context>;
   isClockedIn?: Resolver<Scalars["Boolean"], ParentType, Context>;
-  mediaItems?: Resolver<Array<Maybe<MediaItem>>, ParentType, Context>;
-  timesheets?: Resolver<Array<Maybe<TimesheetEntry>>, ParentType, Context>;
+  mediaItems?: Resolver<Array<MediaItem>, ParentType, Context>;
+  timesheets?: Resolver<Array<TimesheetEntry>, ParentType, Context>;
 };
 
 export type Resolvers<Context = any> = {
@@ -312,6 +336,7 @@ export type Resolvers<Context = any> = {
   File?: FileResolvers<Context>;
   MediaItem?: MediaItemResolvers<Context>;
   Mutation?: MutationResolvers<Context>;
+  PagedCongressMembers?: PagedCongressMembersResolvers<Context>;
   Query?: QueryResolvers<Context>;
   TimesheetEntry?: TimesheetEntryResolvers<Context>;
   Upload?: GraphQLScalarType;

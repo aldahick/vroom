@@ -1,4 +1,4 @@
-type Maybe<T> = T | null;
+type Maybe<T> = T | undefined;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -99,11 +99,22 @@ export type MutationUpdateUserSettingsArgs = {
   password?: Maybe<Scalars["String"]>;
 };
 
+export type PagedCongressMembers = {
+  total: Scalars["Int"];
+  members: Array<CongressMember>;
+};
+
 export type Query = {
-  congressMembers: Array<CongressMember>;
+  congressMembers: PagedCongressMembers;
   hello: Scalars["String"];
   user: User;
   temp__?: Maybe<Scalars["Boolean"]>;
+};
+
+export type QueryCongressMembersArgs = {
+  limit?: Maybe<Scalars["Int"]>;
+  offset?: Maybe<Scalars["Int"]>;
+  query?: Maybe<Scalars["String"]>;
 };
 
 export type TimesheetEntry = {
