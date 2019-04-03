@@ -1,17 +1,37 @@
 import { Injectable } from "@nestjs/common";
-import Axios from "axios";
-import { CongressMemberTermType, CongressParty } from "../../collection/CongressMember";
+import axios from "axios";
+import { CongressMember, CongressMemberTermType, CongressParty } from "../../collection/CongressMember";
 
 const MEMBERS_URL = "https://theunitedstates.io/congress-legislators/legislators-current.json";
 
 @Injectable()
 export class CongressMemberService {
-  async getMembers(): Promise<RawCongressMember[]> {
-    return Axios.get(MEMBERS_URL).then(r => r.data);
+  async getMembers(): Promise<CongressMember[]> {
+    return ((await axios.get(MEMBERS_URL)).data as RawCongressMember[]).map(m => ({
+      _id: m.id.bioguide,
+      externalIds: m.id,
+      name: {
+        first: m.name.first,
+        last: m.name.last,
+        full: m.name.official_full
+      },
+      birthday: new Date(m.bio.birthday),
+      gender: m.bio.gender,
+      terms: m.terms.map(t => ({
+        memberId: m.id.bioguide,
+        type: t.type,
+        state: t.state,
+        party: t.party,
+        start: new Date(t.start),
+        end: new Date(t.end),
+        district: t.district,
+        url: t.url
+      })).sort((a, b) => a.start.getTime() - b.start.getTime())
+    }));
   }
 }
 
-export interface RawCongressMember {
+interface RawCongressMember {
   id: {
     bioguide: string;
     thomas: string;

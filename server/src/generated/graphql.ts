@@ -11,6 +11,54 @@ export type Scalars = {
   Upload: GraphQLUpload;
 };
 
+export type Campaign = {
+  year: Scalars["Int"];
+  candidate: CampaignCandidate;
+  cashOnHand: CampaignCashOnHand;
+  contributions: CampaignContributions;
+  loans: CampaignLoans;
+  refunds: CampaignRefunds;
+  end: Scalars["DateTime"];
+};
+
+export type CampaignCandidate = {
+  id: Scalars["String"];
+  name: Scalars["String"];
+  isIncumbent: Scalars["Boolean"];
+  party: Scalars["String"];
+  state: Scalars["String"];
+  district: Scalars["String"];
+};
+
+export type CampaignCashOnHand = {
+  initial: Scalars["Float"];
+  final: Scalars["Float"];
+};
+
+export type CampaignContributions = {
+  total: Scalars["Float"];
+  candidate: Scalars["Float"];
+  individual: Scalars["Float"];
+  pac: Scalars["Float"];
+  party: Scalars["Float"];
+};
+
+export type CampaignLoans = {
+  candidate?: Maybe<CampaignLoansSource>;
+  other?: Maybe<CampaignLoansSource>;
+  owed: Scalars["Float"];
+};
+
+export type CampaignLoansSource = {
+  given: Scalars["Float"];
+  repaid: Scalars["Float"];
+};
+
+export type CampaignRefunds = {
+  individual: Scalars["Float"];
+  committee: Scalars["Float"];
+};
+
 export type CongressMember = {
   _id: Scalars["String"];
   name: CongressMemberName;
@@ -20,6 +68,7 @@ export type CongressMember = {
   party: CongressParty;
   state: Scalars["String"];
   type: CongressMemberTermType;
+  averageCampaignContributions: Scalars["Float"];
 };
 
 export type CongressMemberName = {
@@ -27,6 +76,12 @@ export type CongressMemberName = {
   last: Scalars["String"];
   full: Scalars["String"];
 };
+
+export enum CongressMemberSortType {
+  LastName = "LAST_NAME",
+  AverageContributionsAsc = "AVERAGE_CONTRIBUTIONS_ASC",
+  AverageContributionsDesc = "AVERAGE_CONTRIBUTIONS_DESC"
+}
 
 export type CongressMemberTerm = {
   type: CongressMemberTermType;
@@ -36,6 +91,7 @@ export type CongressMemberTerm = {
   district?: Maybe<Scalars["Int"]>;
   party: CongressParty;
   url?: Maybe<Scalars["String"]>;
+  campaign?: Maybe<Campaign>;
 };
 
 export enum CongressMemberTermType {
@@ -74,6 +130,7 @@ export type Mutation = {
   createUser: User;
   createUserToken: Scalars["String"];
   markTimesheet: TimesheetEntry;
+  reloadCampaigns: Scalars["Boolean"];
   reloadCongressMembers: Scalars["Boolean"];
   updateUserSettings: User;
 };
@@ -92,6 +149,10 @@ export type MutationCreateUserArgs = {
 export type MutationCreateUserTokenArgs = {
   username: Scalars["String"];
   password: Scalars["String"];
+};
+
+export type MutationReloadCampaignsArgs = {
+  year: Scalars["Int"];
 };
 
 export type MutationUpdateUserSettingsArgs = {
@@ -115,6 +176,7 @@ export type QueryCongressMembersArgs = {
   limit?: Maybe<Scalars["Int"]>;
   offset?: Maybe<Scalars["Int"]>;
   query?: Maybe<Scalars["String"]>;
+  sortBy?: Maybe<CongressMemberSortType>;
 };
 
 export type TimesheetEntry = {
@@ -205,6 +267,72 @@ export type DirectiveResolverFn<
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
+export type CampaignResolvers<Context = any, ParentType = Campaign> = {
+  year?: Resolver<Scalars["Int"], ParentType, Context>;
+  candidate?: Resolver<CampaignCandidate, ParentType, Context>;
+  cashOnHand?: Resolver<CampaignCashOnHand, ParentType, Context>;
+  contributions?: Resolver<CampaignContributions, ParentType, Context>;
+  loans?: Resolver<CampaignLoans, ParentType, Context>;
+  refunds?: Resolver<CampaignRefunds, ParentType, Context>;
+  end?: Resolver<Scalars["DateTime"], ParentType, Context>;
+};
+
+export type CampaignCandidateResolvers<
+  Context = any,
+  ParentType = CampaignCandidate
+> = {
+  id?: Resolver<Scalars["String"], ParentType, Context>;
+  name?: Resolver<Scalars["String"], ParentType, Context>;
+  isIncumbent?: Resolver<Scalars["Boolean"], ParentType, Context>;
+  party?: Resolver<Scalars["String"], ParentType, Context>;
+  state?: Resolver<Scalars["String"], ParentType, Context>;
+  district?: Resolver<Scalars["String"], ParentType, Context>;
+};
+
+export type CampaignCashOnHandResolvers<
+  Context = any,
+  ParentType = CampaignCashOnHand
+> = {
+  initial?: Resolver<Scalars["Float"], ParentType, Context>;
+  final?: Resolver<Scalars["Float"], ParentType, Context>;
+};
+
+export type CampaignContributionsResolvers<
+  Context = any,
+  ParentType = CampaignContributions
+> = {
+  total?: Resolver<Scalars["Float"], ParentType, Context>;
+  candidate?: Resolver<Scalars["Float"], ParentType, Context>;
+  individual?: Resolver<Scalars["Float"], ParentType, Context>;
+  pac?: Resolver<Scalars["Float"], ParentType, Context>;
+  party?: Resolver<Scalars["Float"], ParentType, Context>;
+};
+
+export type CampaignLoansResolvers<
+  Context = any,
+  ParentType = CampaignLoans
+> = {
+  candidate?: Resolver<Maybe<CampaignLoansSource>, ParentType, Context>;
+  other?: Resolver<Maybe<CampaignLoansSource>, ParentType, Context>;
+  owed?: Resolver<Scalars["Float"], ParentType, Context>;
+};
+
+export type CampaignLoansSourceResolvers<
+  Context = any,
+  ParentType = CampaignLoansSource
+> = {
+  given?: Resolver<Scalars["Float"], ParentType, Context>;
+  repaid?: Resolver<Scalars["Float"], ParentType, Context>;
+};
+
+export type CampaignRefundsResolvers<
+  Context = any,
+  ParentType = CampaignRefunds
+> = {
+  individual?: Resolver<Scalars["Float"], ParentType, Context>;
+  committee?: Resolver<Scalars["Float"], ParentType, Context>;
+};
+
 export type CongressMemberResolvers<
   Context = any,
   ParentType = CongressMember
@@ -217,6 +345,11 @@ export type CongressMemberResolvers<
   party?: Resolver<CongressParty, ParentType, Context>;
   state?: Resolver<Scalars["String"], ParentType, Context>;
   type?: Resolver<CongressMemberTermType, ParentType, Context>;
+  averageCampaignContributions?: Resolver<
+    Scalars["Float"],
+    ParentType,
+    Context
+  >;
 };
 
 export type CongressMemberNameResolvers<
@@ -239,6 +372,7 @@ export type CongressMemberTermResolvers<
   district?: Resolver<Maybe<Scalars["Int"]>, ParentType, Context>;
   party?: Resolver<CongressParty, ParentType, Context>;
   url?: Resolver<Maybe<Scalars["String"]>, ParentType, Context>;
+  campaign?: Resolver<Maybe<Campaign>, ParentType, Context>;
 };
 
 export interface DateTimeScalarConfig
@@ -276,6 +410,12 @@ export type MutationResolvers<Context = any, ParentType = Mutation> = {
     MutationCreateUserTokenArgs
   >;
   markTimesheet?: Resolver<TimesheetEntry, ParentType, Context>;
+  reloadCampaigns?: Resolver<
+    Scalars["Boolean"],
+    ParentType,
+    Context,
+    MutationReloadCampaignsArgs
+  >;
   reloadCongressMembers?: Resolver<Scalars["Boolean"], ParentType, Context>;
   updateUserSettings?: Resolver<
     User,
@@ -329,6 +469,13 @@ export type UserResolvers<Context = any, ParentType = User> = {
 };
 
 export type Resolvers<Context = any> = {
+  Campaign?: CampaignResolvers<Context>;
+  CampaignCandidate?: CampaignCandidateResolvers<Context>;
+  CampaignCashOnHand?: CampaignCashOnHandResolvers<Context>;
+  CampaignContributions?: CampaignContributionsResolvers<Context>;
+  CampaignLoans?: CampaignLoansResolvers<Context>;
+  CampaignLoansSource?: CampaignLoansSourceResolvers<Context>;
+  CampaignRefunds?: CampaignRefundsResolvers<Context>;
   CongressMember?: CongressMemberResolvers<Context>;
   CongressMemberName?: CongressMemberNameResolvers<Context>;
   CongressMemberTerm?: CongressMemberTermResolvers<Context>;

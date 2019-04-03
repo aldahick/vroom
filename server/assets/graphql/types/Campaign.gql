@@ -1,0 +1,47 @@
+type Campaign {
+  year: Int!
+  candidate: CampaignCandidate!
+  cashOnHand: CampaignCashOnHand!
+  contributions: CampaignContributions!
+  loans: CampaignLoans!
+  refunds: CampaignRefunds!
+  end: DateTime!
+}
+
+type CampaignCandidate {
+  id: String!
+  name: String!
+  isIncumbent: Boolean!
+  party: String!
+  state: String!
+  district: String!
+}
+
+type CampaignCashOnHand {
+  initial: Float!
+  final: Float!
+}
+
+type CampaignContributions {
+  total: Float!
+  candidate: Float!
+  individual: Float!
+  pac: Float!
+  party: Float!
+}
+
+type CampaignLoans {
+  candidate: CampaignLoansSource
+  other: CampaignLoansSource
+  owed: Float!
+}
+
+type CampaignLoansSource {
+  given: Float!
+  repaid: Float!
+}
+
+type CampaignRefunds {
+  individual: Float!
+  committee: Float!
+}

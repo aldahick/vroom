@@ -2,8 +2,8 @@ import gql from "graphql-tag";
 import { CongressMember } from "./types";
 
 export const GET_CONGRESS_MEMBERS = gql`
-query GetCongressMembersWeb($limit: Int, $offset: Int, $query: String) {
-  congressMembers(limit: $limit, offset: $offset, query: $query) {
+query GetCongressMembersWeb($limit: Int, $offset: Int, $query: String, $sortBy: CongressMemberSortType) {
+  congressMembers(limit: $limit, offset: $offset, query: $query, sortBy: $sortBy) {
     total
     members {
       _id
@@ -15,15 +15,24 @@ query GetCongressMembersWeb($limit: Int, $offset: Int, $query: String) {
       party
       state
       type
+      averageCampaignContributions
+      terms {
+        start
+        campaign {
+          year
+          contributions {
+            total
+            individual
+          }
+        }
+      }
     }
   }
 }`;
 
-type ResultKeys = "_id" | "name" | "party" | "state" | "type";
-
 export type GetCongressMembersResult = {
   congressMembers: {
     total: number;
-    members: Pick<CongressMember, ResultKeys>[];
+    members: CongressMember[];
   }
 };

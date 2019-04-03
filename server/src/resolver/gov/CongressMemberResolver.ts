@@ -2,7 +2,7 @@ import { UseGuards } from "@nestjs/common";
 import * as gql from "@nestjs/graphql";
 import * as _ from "lodash";
 import { CongressMember, CongressParty } from "../../collection/CongressMember";
-import { QueryCongressMembersArgs } from "../../generated/graphql";
+import { CongressMemberSortType, QueryCongressMembersArgs } from "../../generated/graphql";
 import { AuthBearerGuard } from "../../lib/AuthBearerGuard";
 import { app } from "../../main";
 import { CongressMemberService, MongoService, StateNameService } from "../../service";
@@ -36,57 +36,66 @@ export class CongressMemberResolver {
   @UseGuards(AuthBearerGuard)
   @gql.Query("congressMembers")
   async congressMembers(
-    @gql.Args() { query: searchTerm, limit, offset }: QueryCongressMembersArgs
+    @gql.Args() {
+      query: searchTerm,
+      limit, offset,
+      sortBy
+    }: QueryCongressMembersArgs
   ): Promise<{
     total: number;
     members: CongressMember[];
   }> {
-    let query = this.db.congressMembers.find().sort({
-      "name.last": 1
-    });
+    const aggregateSteps: any[] = [];
+    if (sortBy && sortBy !== CongressMemberSortType.LastName) {
+      if ([CongressMemberSortType.AverageContributionsAsc, CongressMemberSortType.AverageContributionsDesc].includes(sortBy)) {
+        aggregateSteps.push({
+          $match: {
+            "averageCampaignContributions": { $exists: true }
+          }
+        }, {
+          $sort: {
+            "averageCampaignContributions": sortBy === CongressMemberSortType.AverageContributionsAsc ? 1 : -1
+          }
+        });
+      }
+    } else {
+      aggregateSteps.push({
+        $sort: { "name.last": 1 }
+      });
+    }
     if (searchTerm) {
-      query = query.filter(this.getFilterQuery(searchTerm));
+      aggregateSteps.push({
+        $match: this.getFilterStep(searchTerm)
+      });
     }
-    // no reason to have limit without offset
+    const countRow = (await this.db.congressMembers.aggregate< { total: number }>([
+      ...aggregateSteps,
+      { $count: "total" }
+    ]).toArray())[0];
+    if (!countRow) return { total: 0, members: [] };
     if (offset !== undefined && limit) {
-      query = query.skip(offset).limit(limit);
+      aggregateSteps.push({
+        $skip: offset
+      }, {
+        $limit: limit
+      });
     }
-    const total = await query.clone().count(false);
     return {
-      total,
-      members: await query.toArray()
+      total: countRow.total,
+      members: await this.db.congressMembers.aggregate(aggregateSteps).toArray()
     };
   }
 
   @UseGuards(AuthBearerGuard)
   @gql.Mutation("reloadCongressMembers")
   async reloadCongressMembers(): Promise<boolean> {
-    const rawMembers = await this.congressMemberService.getMembers();
-    const members: CongressMember[] = rawMembers.map(m => ({
-      _id: m.id.bioguide,
-      name: {
-        first: m.name.first,
-        last: m.name.last,
-        full: m.name.official_full
-      },
-      birthday: new Date(m.bio.birthday),
-      gender: m.bio.gender,
-      terms: m.terms.map(t => ({
-        type: t.type,
-        state: t.state,
-        party: t.party,
-        start: new Date(t.start),
-        end: new Date(t.end),
-        district: t.district,
-        url: t.url
-      }))
-    }));
+    const members = await this.congressMemberService.getMembers();
     await this.db.congressMembers.deleteMany({});
     await this.db.congressMembers.insertMany(members);
     return true;
   }
 
-  private getFilterQuery(searchTerm: string) {
+  private getFilterStep(searchTerm: string) {
     const partyNames = Object.values(CongressParty).map(s => s.toLowerCase());
     if (partyNames.includes(searchTerm.toLowerCase())) {
       return {

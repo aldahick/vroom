@@ -11,6 +11,54 @@ export type Scalars = {
   Upload: File;
 };
 
+export type Campaign = {
+  year: Scalars["Int"];
+  candidate: CampaignCandidate;
+  cashOnHand: CampaignCashOnHand;
+  contributions: CampaignContributions;
+  loans: CampaignLoans;
+  refunds: CampaignRefunds;
+  end: Scalars["DateTime"];
+};
+
+export type CampaignCandidate = {
+  id: Scalars["String"];
+  name: Scalars["String"];
+  isIncumbent: Scalars["Boolean"];
+  party: Scalars["String"];
+  state: Scalars["String"];
+  district: Scalars["String"];
+};
+
+export type CampaignCashOnHand = {
+  initial: Scalars["Float"];
+  final: Scalars["Float"];
+};
+
+export type CampaignContributions = {
+  total: Scalars["Float"];
+  candidate: Scalars["Float"];
+  individual: Scalars["Float"];
+  pac: Scalars["Float"];
+  party: Scalars["Float"];
+};
+
+export type CampaignLoans = {
+  candidate?: Maybe<CampaignLoansSource>;
+  other?: Maybe<CampaignLoansSource>;
+  owed: Scalars["Float"];
+};
+
+export type CampaignLoansSource = {
+  given: Scalars["Float"];
+  repaid: Scalars["Float"];
+};
+
+export type CampaignRefunds = {
+  individual: Scalars["Float"];
+  committee: Scalars["Float"];
+};
+
 export type CongressMember = {
   _id: Scalars["String"];
   name: CongressMemberName;
@@ -20,6 +68,7 @@ export type CongressMember = {
   party: CongressParty;
   state: Scalars["String"];
   type: CongressMemberTermType;
+  averageCampaignContributions?: Maybe<Scalars["Float"]>;
 };
 
 export type CongressMemberName = {
@@ -27,6 +76,12 @@ export type CongressMemberName = {
   last: Scalars["String"];
   full: Scalars["String"];
 };
+
+export enum CongressMemberSortType {
+  LastName = "LAST_NAME",
+  AverageContributionsAsc = "AVERAGE_CONTRIBUTIONS_ASC",
+  AverageContributionsDesc = "AVERAGE_CONTRIBUTIONS_DESC"
+}
 
 export type CongressMemberTerm = {
   type: CongressMemberTermType;
@@ -36,6 +91,7 @@ export type CongressMemberTerm = {
   district?: Maybe<Scalars["Int"]>;
   party: CongressParty;
   url?: Maybe<Scalars["String"]>;
+  campaign?: Maybe<Campaign>;
 };
 
 export enum CongressMemberTermType {
@@ -74,6 +130,7 @@ export type Mutation = {
   createUser: User;
   createUserToken: Scalars["String"];
   markTimesheet: TimesheetEntry;
+  reloadCampaigns: Scalars["Boolean"];
   reloadCongressMembers: Scalars["Boolean"];
   updateUserSettings: User;
 };
@@ -92,6 +149,10 @@ export type MutationCreateUserArgs = {
 export type MutationCreateUserTokenArgs = {
   username: Scalars["String"];
   password: Scalars["String"];
+};
+
+export type MutationReloadCampaignsArgs = {
+  year: Scalars["Int"];
 };
 
 export type MutationUpdateUserSettingsArgs = {
@@ -115,6 +176,7 @@ export type QueryCongressMembersArgs = {
   limit?: Maybe<Scalars["Int"]>;
   offset?: Maybe<Scalars["Int"]>;
   query?: Maybe<Scalars["String"]>;
+  sortBy?: Maybe<CongressMemberSortType>;
 };
 
 export type TimesheetEntry = {

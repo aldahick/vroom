@@ -8,6 +8,7 @@ type CongressMember {
   party: CongressParty!
   state: String!
   type: CongressMemberTermType!
+  averageCampaignContributions: Float
 }
 
 type CongressMemberName {
@@ -24,6 +25,7 @@ type CongressMemberTerm {
   district: Int
   party: CongressParty!
   url: String
+  campaign: Campaign
 }
 
 enum CongressParty {
@@ -40,4 +42,10 @@ enum CongressMemberTermType {
 type PagedCongressMembers {
   total: Int!
   members: [CongressMember!]!
+}
+
+enum CongressMemberSortType {
+  LAST_NAME
+  AVERAGE_CONTRIBUTIONS_ASC
+  AVERAGE_CONTRIBUTIONS_DESC
 }
