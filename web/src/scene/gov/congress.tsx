@@ -66,7 +66,7 @@ export const CongressScene = withStyles(styles)(class extends React.Component<Wi
       >
         {({ data, error, loading }) => {
           if (loading) return "Loading...";
-          if (error || !data) return <Typography color="error">{error ? error.message : "No data available."}{console.error(error)}</Typography>;
+          if (error || !data) return <Typography color="error">{error ? error.message : "No data available."}</Typography>;
           return (
             <Grid container>
               <Grid container item xs={12} justify="space-between">
