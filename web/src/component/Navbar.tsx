@@ -12,7 +12,8 @@ const styles = createStyles({
 
 const NAVBAR_LINKS = {
   noAuth: {
-    "Hello!": "/"
+    "Hello!": "/",
+    "Congressional Overview": "/gov/congress"
   },
   authRequired: {
     "Manage Media": "/media",

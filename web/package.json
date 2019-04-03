@@ -7,7 +7,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "tslint -p ."
+    "lint": "tslint -p .",
+    "generate:graphql": "graphql-codegen --config codegen.graphql.yml"
   },
   "browserslist": [
     ">0.2%",
@@ -36,6 +37,9 @@
   },
   "devDependencies": {
     "@aldahick/tslint-rules": "0.0.2",
+    "@graphql-codegen/cli": "^1.0.6",
+    "@graphql-codegen/typescript": "1.0.6",
+    "@graphql-codegen/typescript-operations": "1.0.6",
     "@types/apollo-upload-client": "^8.1.1",
     "@types/graphql": "^14.0.7",
     "@types/lodash": "^4.14.123",

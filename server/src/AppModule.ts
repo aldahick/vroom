@@ -47,9 +47,7 @@ import * as services from "./service";
   ],
   controllers: Object.values(controllers),
   providers: [
-    services.ConfigService,
-    services.DatabaseService,
-    services.LoggingService,
+    ...Object.values(services),
     RequestContext,
     ...Object.values(managers),
     ...Object.values(resolvers)

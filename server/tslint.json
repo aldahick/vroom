@@ -4,5 +4,10 @@
   ],
   "rules": {
     "ordered-imports": true
+  },
+  "linterOptions": {
+    "exclude": [
+      "./src/generated/*.ts"
+      ]
   }
 }

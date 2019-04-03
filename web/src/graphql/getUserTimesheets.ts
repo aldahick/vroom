@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import { TimesheetEntry } from "./types/TimesheetEntry";
+import { User } from "./types";
 
 export const GET_USER_TIMESHEETS = gql`
 query GetUserMediaItemsWeb {
@@ -14,8 +14,5 @@ query GetUserMediaItemsWeb {
 }`;
 
 export type GetUserTimesheetsResult = {
-  user: {
-    isClockedIn: boolean;
-    timesheets: TimesheetEntry[]
-  }
+  user: Pick<User, "isClockedIn" | "timesheets">;
 };

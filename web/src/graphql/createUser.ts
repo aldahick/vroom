@@ -1,5 +1,6 @@
 import gql from "graphql-tag";
 import { MutationFn } from "react-apollo";
+import { MutationCreateUserArgs } from "./types";
 
 export const CREATE_USER = gql`
 mutation CreateUserWeb($username: String!, $password: String!) {
@@ -10,7 +11,4 @@ mutation CreateUserWeb($username: String!, $password: String!) {
 
 export type CreateUserMutation = MutationFn<{
   id: string;
-}, {
-  username: string;
-  password: string;
-}>;
+}, MutationCreateUserArgs>;

@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 import { MutationFn } from "react-apollo";
-import { TimesheetEntry } from "./types/TimesheetEntry";
+import { TimesheetEntry } from "./types";
 
 export const MARK_TIMESHEET = gql`
 mutation MarkTimesheetWeb {

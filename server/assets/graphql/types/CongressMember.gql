@@ -1,0 +1,51 @@
+type CongressMember {
+  _id: String!
+  name: CongressMemberName!
+  birthday: DateTime!
+  gender: Gender
+  terms: [CongressMemberTerm!]!
+
+  party: CongressParty!
+  state: String!
+  type: CongressMemberTermType!
+  averageCampaignContributions: Float
+}
+
+type CongressMemberName {
+  first: String!
+  last: String!
+  full: String!
+}
+
+type CongressMemberTerm {
+  type: CongressMemberTermType!
+  start: DateTime!
+  end: DateTime!
+  state: String!
+  district: Int
+  party: CongressParty!
+  url: String
+  campaign: Campaign
+}
+
+enum CongressParty {
+  DEMOCRAT,
+  INDEPENDENT,
+  REPUBLICAN
+}
+
+enum CongressMemberTermType {
+  HOUSE,
+  SENATE
+}
+
+type PagedCongressMembers {
+  total: Int!
+  members: [CongressMember!]!
+}
+
+enum CongressMemberSortType {
+  LAST_NAME
+  AVERAGE_CONTRIBUTIONS_ASC
+  AVERAGE_CONTRIBUTIONS_DESC
+}

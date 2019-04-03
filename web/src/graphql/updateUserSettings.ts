@@ -1,5 +1,6 @@
 import gql from "graphql-tag";
 import { MutationFn } from "react-apollo";
+import { MutationUpdateUserSettingsArgs } from "./types";
 
 export const UPDATE_USER_SETTINGS = gql`
 mutation UpdateUserSettingsWeb($username: String, $password: String) {
@@ -10,7 +11,4 @@ mutation UpdateUserSettingsWeb($username: String, $password: String) {
 
 export type UpdateUserSettingsMutation = MutationFn<{
   id: string;
-}, {
-  username?: string;
-  password?: string;
-}>;
+}, MutationUpdateUserSettingsArgs>;

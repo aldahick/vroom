@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import { User } from "./types";
 
 export const GET_USER_SETTINGS = gql`
 query GetUserSettingsWeb {
@@ -8,7 +9,5 @@ query GetUserSettingsWeb {
 }`;
 
 export type GetUserSettingsResult = {
-  user: {
-    username: string;
-  }
+  user: Pick<User, "username">
 };

@@ -15,7 +15,7 @@ export const Layout = withStyles(styles)(class extends React.Component<WithStyle
       <Fragment>
         <Navbar />
         <Grid container justify="center" className={classes.body}>
-          <Grid item xs={12} sm={10} md={8} lg={6}>
+          <Grid item xs={12} sm={10} md={9} lg={7}>
             {children}
           </Grid>
         </Grid>

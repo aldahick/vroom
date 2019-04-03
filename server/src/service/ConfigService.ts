@@ -19,6 +19,8 @@ export class ConfigService {
 
   @ConfigService.optional() readonly MEDIA_DIR?: string;
 
+  @ConfigService.optional() readonly MONGO_URL?: string;
+
   constructor(
     private logger: LoggingService
   ) {

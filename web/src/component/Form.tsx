@@ -11,17 +11,17 @@ type FieldDefinition = {
   type?: string;
 };
 
-interface FormProps<FieldKey extends string> {
+interface FormProps<Fields extends {[key: string]: string}> {
   errorMessage?: string;
   successMessage?: string;
-  fields: { [key in FieldKey]: FieldDefinition };
-  onSubmit(fieldValues: { [key in FieldKey]?: string | File }): Promise<void> | void;
+  fields: { [key in keyof Fields]: FieldDefinition };
+  onSubmit(fieldValues: Fields): Promise<void> | void;
   submitText?: string;
 }
 
-interface FormState<FieldKey extends string> {
+interface FormState<Fields extends {[key: string]: string}> {
   /** only contains changed values */
-  fieldValues: { [key in FieldKey]?: string | File };
+  fieldValues: {[key in keyof Fields]?: Fields[key]};
 }
 
 const styles = createStyles({
@@ -30,16 +30,16 @@ const styles = createStyles({
   }
 });
 
-export const Form = withStyles(styles)(class <FieldKey extends string> extends React.Component<WithStyles<typeof styles> & FormProps<FieldKey>, FormState<FieldKey>> {
-  constructor(props: FormProps<FieldKey>) {
-    super(props as WithStyles<typeof styles> & FormProps<FieldKey>);
+export const Form = withStyles(styles)(class <Fields extends {[key: string]: any}> extends React.Component<WithStyles<typeof styles> & FormProps<Fields>, FormState<Fields>> {
+  constructor(props: FormProps<Fields>) {
+    super(props as WithStyles<typeof styles> & FormProps<Fields>);
     this.state = {
-      fieldValues: _.mapValues(this.props.fields, (field: FieldDefinition, key: FieldKey) =>
+      fieldValues: _.mapValues(this.props.fields, (field: FieldDefinition, key: keyof Fields) =>
         field.defaultValue || undefined) as any
     };
   }
 
-  onChange = (field: FieldKey) => (evt: React.ChangeEvent<HTMLInputElement>) => {
+  onChange = (field: keyof Fields) => (evt: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       fieldValues: {
         ...this.state.fieldValues,
@@ -48,7 +48,7 @@ export const Form = withStyles(styles)(class <FieldKey extends string> extends R
     });
   }
 
-  onFileChange = (field: FieldKey) => (evt: React.ChangeEvent<HTMLInputElement>) => {
+  onFileChange = (field: keyof Fields) => (evt: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       fieldValues: {
         ...this.state.fieldValues,
@@ -67,20 +67,20 @@ export const Form = withStyles(styles)(class <FieldKey extends string> extends R
 
   submit = () => {
     // if any required fields are not filled in
-    if (_.map(this.props.fields, (field, key: FieldKey) =>
+    if (_.map(this.props.fields, (field, key: keyof Fields) =>
       !field.isRequired || !!this.state.fieldValues[key]
     ).some(v => !v)) { return; }
-    const result = this.props.onSubmit(_.cloneDeep(this.state.fieldValues));
+    const result = this.props.onSubmit(_.cloneDeep(this.state.fieldValues) as any);
     if (result instanceof Promise) {
       result.catch(console.error);
     }
   }
 
-  renderInput = (key: FieldKey, field: FieldDefinition) => {
+  renderInput = (key: keyof Fields, field: FieldDefinition) => {
     const props: InputProps = {
       type: field.type || "text",
       value: this.state.fieldValues[key] || field.defaultValue || "",
-      placeholder: field.placeholder || key,
+      placeholder: field.placeholder || key as string,
       onChange: this.onChange(key),
       onKeyUp: this.onKeyUp
     };
@@ -117,12 +117,12 @@ export const Form = withStyles(styles)(class <FieldKey extends string> extends R
           </Typography>
         )}
         {children}
-        {_.map(fields, (field: FieldDefinition, key: FieldKey) => (
+        {_.map(fields, (field: FieldDefinition, key: keyof Fields) => (
           <Grid
             container
             alignItems="center"
             direction="column"
-            key={key}
+            key={key as string}
             className={classes.inputContainer}
           >
             {this.renderInput(key, field)}

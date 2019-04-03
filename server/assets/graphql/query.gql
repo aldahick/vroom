@@ -1,4 +1,10 @@
 type Query {
+  congressMembers(
+    limit: Int,
+    offset: Int,
+    query: String,
+    sortBy: CongressMemberSortType
+  ): PagedCongressMembers!
   hello: String!
   user: User!
 }

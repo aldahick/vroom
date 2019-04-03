@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import { User } from "./types";
 
 export const GET_USER_MEDIA_ITEMS = gql`
 query GetUserMediaItemsWeb {
@@ -13,12 +14,5 @@ query GetUserMediaItemsWeb {
 }`;
 
 export type GetUserMediaItemsResult = {
-  user: {
-    mediaItems: {
-      id: number;
-      key: string;
-      mimeType: string;
-      token: string;
-    }[];
-  }
+  user: Pick<User, "mediaItems">;
 };

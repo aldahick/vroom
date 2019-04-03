@@ -2,6 +2,7 @@ import * as nest from "@nestjs/common";
 import { UseGuards } from "@nestjs/common";
 import * as gql from "@nestjs/graphql";
 import * as _ from "lodash";
+import { MutationCreateUserArgs, MutationCreateUserTokenArgs, MutationUpdateUserSettingsArgs } from "../generated/graphql";
 import { AuthBearerGuard } from "../lib/AuthBearerGuard";
 import { RequestContext } from "../lib/RequestContext";
 import { AuthTokenManager, TimesheetManager } from "../manager";
@@ -21,8 +22,7 @@ export class UserResolver {
 
   @gql.Mutation("createUser")
   async createUser(
-    @gql.Args("username") username: string,
-    @gql.Args("password") password: string
+    @gql.Args() { username, password }: MutationCreateUserArgs
   ): Promise<User> {
     const existingUser = await this.db.users.findOne({ username });
     if (existingUser) {
@@ -36,8 +36,7 @@ export class UserResolver {
 
   @gql.Mutation("createUserToken")
   async createUserToken(
-    @gql.Args("username") username: string,
-    @gql.Args("password") password: string
+    @gql.Args() { username, password }: MutationCreateUserTokenArgs
   ): Promise<string> {
     const user = await this.db.users.findOne({ username });
     if (!user) {
@@ -56,7 +55,7 @@ export class UserResolver {
   @gql.Mutation("updateUserSettings")
   async updateUserSettings(
     @gql.Context() context: RequestContext,
-    @gql.Args() fields: {[key in "username" | "password"]?: string}
+    @gql.Args() fields: MutationUpdateUserSettingsArgs
   ): Promise<User> {
     if (!context.userId) throw new nest.ForbiddenException();
     fields = _.pick(fields, ["username", "password"]);
