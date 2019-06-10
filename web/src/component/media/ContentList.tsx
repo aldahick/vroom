@@ -3,6 +3,7 @@ import _ from "lodash";
 import React, { Fragment } from "react";
 import { Query } from "react-apollo";
 import { GET_USER_MEDIA_ITEMS, GetUserMediaItemsResult } from "../../graphql/getUserMediaItems";
+import { getLongestCommonPrefix } from "../../util/string";
 import { ContentView } from "./ContentView";
 
 const styles = createStyles({
@@ -40,12 +41,13 @@ export const ContentList = withStyles(styles)(class extends React.Component<With
                   return <Typography color="error">No media items were found!</Typography>;
                 }
                 const selectedItem = mediaItems.find(i => i.id === this.state.selected);
+                const commonPrefix = getLongestCommonPrefix(mediaItems.map(i => i.key));
                 return (
                   <Fragment>
                     <Grid item xs={6} style={{ width: "50%" }}>
                       <Select fullWidth onChange={this.onChange} value={this.state.selected || mediaItems[0].id}>
                         {mediaItems.map(({ key, id }) =>
-                          <MenuItem key={key} value={id}>{key}</MenuItem>
+                          <MenuItem key={key} value={id}>{key.slice(commonPrefix.length)}</MenuItem>
                         )}
                       </Select>
                     </Grid>
