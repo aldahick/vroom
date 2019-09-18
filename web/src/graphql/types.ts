@@ -105,40 +105,17 @@ export enum CongressParty {
   Republican = "REPUBLICAN"
 }
 
-export type File = {
-  filename: Scalars["String"];
-  mimetype: Scalars["String"];
-  encoding: Scalars["String"];
-};
-
 export enum Gender {
   M = "M",
   F = "F"
 }
 
-export type MediaItem = {
-  id: Scalars["Int"];
-  user: User;
-  key: Scalars["String"];
-  mimeType: Scalars["String"];
-  createdAt: Scalars["DateTime"];
-  token: Scalars["String"];
-};
-
 export type Mutation = {
-  createMediaItem: MediaItem;
   createUser: User;
   createUserToken: Scalars["String"];
-  markTimesheet: TimesheetEntry;
   reloadCampaigns: Scalars["Boolean"];
   reloadCongressMembers: Scalars["Boolean"];
   updateUserSettings: User;
-};
-
-export type MutationCreateMediaItemArgs = {
-  key: Scalars["String"];
-  file?: Maybe<Scalars["Upload"]>;
-  data?: Maybe<Scalars["String"]>;
 };
 
 export type MutationCreateUserArgs = {
@@ -179,17 +156,7 @@ export type QueryCongressMembersArgs = {
   sortBy?: Maybe<CongressMemberSortType>;
 };
 
-export type TimesheetEntry = {
-  id: Scalars["Int"];
-  user: User;
-  start: Scalars["DateTime"];
-  end?: Maybe<Scalars["DateTime"]>;
-};
-
 export type User = {
   id: Scalars["Int"];
   username: Scalars["String"];
-  isClockedIn: Scalars["Boolean"];
-  mediaItems: Array<MediaItem>;
-  timesheets: Array<TimesheetEntry>;
 };

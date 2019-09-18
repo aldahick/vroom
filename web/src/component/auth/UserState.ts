@@ -1,4 +1,4 @@
-const TOKEN_KEY = "auth.token";
+const TOKEN_KEY = "vroom.auth.token";
 
 export const UserState = new (class {
   public token?: string;
