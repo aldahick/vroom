@@ -6,12 +6,6 @@ import * as models from "../model";
 
 @nest.Injectable()
 export class DatabaseService {
-  @DatabaseService.repository(models.MediaItem)
-  mediaItems!: orm.Repository<models.MediaItem>;
-
-  @DatabaseService.repository(models.TimesheetEntry)
-  timesheetEntries!: orm.Repository<models.TimesheetEntry>;
-
   @DatabaseService.repository(models.User)
   users!: orm.Repository<models.User>;
 

@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { AuthManager } from "../../manager";
-import { User } from "../../model";
+import { User } from "../model";
+import { AuthManager } from "./AuthManager";
 
 describe("AuthManager", () => {
   const authManager = new AuthManager();

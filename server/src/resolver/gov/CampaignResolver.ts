@@ -3,21 +3,29 @@ import * as gql from "@nestjs/graphql";
 import * as _ from "lodash";
 import { MutationReloadCampaignsArgs } from "../../generated/graphql";
 import { AuthBearerGuard } from "../../lib/AuthBearerGuard";
-import { CampaignService, MongoService } from "../../service";
+import { RequestContext } from "../../lib/RequestContext";
+import { CampaignService, LoggingService, MongoService } from "../../service";
 
 @gql.Resolver("Campaign")
 export class CampaignResolver {
   constructor(
     private campaignService: CampaignService,
-    private db: MongoService
+    private db: MongoService,
+    private logger: LoggingService
   ) { }
 
   @UseGuards(AuthBearerGuard)
   @gql.Mutation("reloadCampaigns")
-  async reloadCampaigns(@gql.Args() { year }: MutationReloadCampaignsArgs): Promise<boolean> {
+  async reloadCampaigns(
+    @gql.Context() context: RequestContext,
+    @gql.Args() { year }: MutationReloadCampaignsArgs
+  ): Promise<boolean> {
+    this.logger.log(`reloadCampaigns.start ${context.userId ? (await context.user())!.username : "system"}`);
     let campaigns = await this.campaignService.getForYear(year);
+    this.logger.log(`reloadCampaigns.fetch ${campaigns.length}`);
     await this.db.campaigns.deleteMany({ year });
     await this.db.campaigns.insertMany(campaigns);
+    this.logger.log(`reloadCampaigns.db`);
 
     // assign CongressMember.terms.campaignId
     await Promise.all(campaigns.map(async campaign => {
@@ -33,6 +41,7 @@ export class CampaignResolver {
         }
       });
     }));
+    this.logger.log(`reloadCampaigns.congressMember.campaignId`);
 
     campaigns = await this.db.campaigns.find().toArray();
     // recalculate averageCampaignContributions (using all campaigns, not just the specified year's)
@@ -45,6 +54,7 @@ export class CampaignResolver {
         $set: { averageCampaignContributions }
       });
     }));
+    this.logger.log(`reloadCampaigns.congressMember.averageCampaignContributions`);
     return true;
   }
 }

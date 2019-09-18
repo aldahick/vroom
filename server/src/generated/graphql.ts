@@ -68,7 +68,7 @@ export type CongressMember = {
   party: CongressParty;
   state: Scalars["String"];
   type: CongressMemberTermType;
-  averageCampaignContributions: Scalars["Float"];
+  averageCampaignContributions?: Maybe<Scalars["Float"]>;
 };
 
 export type CongressMemberName = {
@@ -105,40 +105,17 @@ export enum CongressParty {
   Republican = "REPUBLICAN"
 }
 
-export type File = {
-  filename: Scalars["String"];
-  mimetype: Scalars["String"];
-  encoding: Scalars["String"];
-};
-
 export enum Gender {
   M = "M",
   F = "F"
 }
 
-export type MediaItem = {
-  id: Scalars["Int"];
-  user: User;
-  key: Scalars["String"];
-  mimeType: Scalars["String"];
-  createdAt: Scalars["DateTime"];
-  token: Scalars["String"];
-};
-
 export type Mutation = {
-  createMediaItem: MediaItem;
   createUser: User;
   createUserToken: Scalars["String"];
-  markTimesheet: TimesheetEntry;
   reloadCampaigns: Scalars["Boolean"];
   reloadCongressMembers: Scalars["Boolean"];
   updateUserSettings: User;
-};
-
-export type MutationCreateMediaItemArgs = {
-  key: Scalars["String"];
-  file?: Maybe<Scalars["Upload"]>;
-  data?: Maybe<Scalars["String"]>;
 };
 
 export type MutationCreateUserArgs = {
@@ -179,19 +156,9 @@ export type QueryCongressMembersArgs = {
   sortBy?: Maybe<CongressMemberSortType>;
 };
 
-export type TimesheetEntry = {
-  id: Scalars["Int"];
-  user: User;
-  start: Scalars["DateTime"];
-  end?: Maybe<Scalars["DateTime"]>;
-};
-
 export type User = {
   id: Scalars["Int"];
   username: Scalars["String"];
-  isClockedIn: Scalars["Boolean"];
-  mediaItems: Array<MediaItem>;
-  timesheets: Array<TimesheetEntry>;
 };
 
 import {
@@ -346,7 +313,7 @@ export type CongressMemberResolvers<
   state?: Resolver<Scalars["String"], ParentType, Context>;
   type?: Resolver<CongressMemberTermType, ParentType, Context>;
   averageCampaignContributions?: Resolver<
-    Scalars["Float"],
+    Maybe<Scalars["Float"]>,
     ParentType,
     Context
   >;
@@ -380,28 +347,7 @@ export interface DateTimeScalarConfig
   name: "DateTime";
 }
 
-export type FileResolvers<Context = any, ParentType = File> = {
-  filename?: Resolver<Scalars["String"], ParentType, Context>;
-  mimetype?: Resolver<Scalars["String"], ParentType, Context>;
-  encoding?: Resolver<Scalars["String"], ParentType, Context>;
-};
-
-export type MediaItemResolvers<Context = any, ParentType = MediaItem> = {
-  id?: Resolver<Scalars["Int"], ParentType, Context>;
-  user?: Resolver<User, ParentType, Context>;
-  key?: Resolver<Scalars["String"], ParentType, Context>;
-  mimeType?: Resolver<Scalars["String"], ParentType, Context>;
-  createdAt?: Resolver<Scalars["DateTime"], ParentType, Context>;
-  token?: Resolver<Scalars["String"], ParentType, Context>;
-};
-
 export type MutationResolvers<Context = any, ParentType = Mutation> = {
-  createMediaItem?: Resolver<
-    MediaItem,
-    ParentType,
-    Context,
-    MutationCreateMediaItemArgs
-  >;
   createUser?: Resolver<User, ParentType, Context, MutationCreateUserArgs>;
   createUserToken?: Resolver<
     Scalars["String"],
@@ -409,7 +355,6 @@ export type MutationResolvers<Context = any, ParentType = Mutation> = {
     Context,
     MutationCreateUserTokenArgs
   >;
-  markTimesheet?: Resolver<TimesheetEntry, ParentType, Context>;
   reloadCampaigns?: Resolver<
     Scalars["Boolean"],
     ParentType,
@@ -445,27 +390,9 @@ export type QueryResolvers<Context = any, ParentType = Query> = {
   temp__?: Resolver<Maybe<Scalars["Boolean"]>, ParentType, Context>;
 };
 
-export type TimesheetEntryResolvers<
-  Context = any,
-  ParentType = TimesheetEntry
-> = {
-  id?: Resolver<Scalars["Int"], ParentType, Context>;
-  user?: Resolver<User, ParentType, Context>;
-  start?: Resolver<Scalars["DateTime"], ParentType, Context>;
-  end?: Resolver<Maybe<Scalars["DateTime"]>, ParentType, Context>;
-};
-
-export interface UploadScalarConfig
-  extends GraphQLScalarTypeConfig<Scalars["Upload"], any> {
-  name: "Upload";
-}
-
 export type UserResolvers<Context = any, ParentType = User> = {
   id?: Resolver<Scalars["Int"], ParentType, Context>;
   username?: Resolver<Scalars["String"], ParentType, Context>;
-  isClockedIn?: Resolver<Scalars["Boolean"], ParentType, Context>;
-  mediaItems?: Resolver<Array<MediaItem>, ParentType, Context>;
-  timesheets?: Resolver<Array<TimesheetEntry>, ParentType, Context>;
 };
 
 export type Resolvers<Context = any> = {
@@ -480,13 +407,9 @@ export type Resolvers<Context = any> = {
   CongressMemberName?: CongressMemberNameResolvers<Context>;
   CongressMemberTerm?: CongressMemberTermResolvers<Context>;
   DateTime?: GraphQLScalarType;
-  File?: FileResolvers<Context>;
-  MediaItem?: MediaItemResolvers<Context>;
   Mutation?: MutationResolvers<Context>;
   PagedCongressMembers?: PagedCongressMembersResolvers<Context>;
   Query?: QueryResolvers<Context>;
-  TimesheetEntry?: TimesheetEntryResolvers<Context>;
-  Upload?: GraphQLScalarType;
   User?: UserResolvers<Context>;
 };
 

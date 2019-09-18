@@ -1,6 +1,0 @@
-type TimesheetEntry {
-  id: Int!
-  user: User!
-  start: DateTime!
-  end: DateTime
-}

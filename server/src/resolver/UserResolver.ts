@@ -5,10 +5,9 @@ import * as _ from "lodash";
 import { MutationCreateUserArgs, MutationCreateUserTokenArgs, MutationUpdateUserSettingsArgs } from "../generated/graphql";
 import { AuthBearerGuard } from "../lib/AuthBearerGuard";
 import { RequestContext } from "../lib/RequestContext";
-import { AuthTokenManager, TimesheetManager } from "../manager";
+import { AuthTokenManager } from "../manager";
 import { AuthManager } from "../manager/AuthManager";
-import { TimesheetEntry, User } from "../model";
-import { MediaItem } from "../model/MediaItem";
+import { User } from "../model";
 import { DatabaseService } from "../service";
 
 @gql.Resolver("User")
@@ -16,8 +15,7 @@ export class UserResolver {
   constructor(
     private authManager: AuthManager,
     private authTokenManager: AuthTokenManager,
-    private db: DatabaseService,
-    private timesheetManager: TimesheetManager
+    private db: DatabaseService
   ) { }
 
   @gql.Mutation("createUser")
@@ -76,37 +74,4 @@ export class UserResolver {
   ): Promise<User | undefined> {
     return context.user();
   }
-
-  @gql.ResolveProperty("isClockedIn")
-  async isClockedIn(
-    @gql.Root() user: User
-  ) {
-    const lastEntry = await this.timesheetManager.getLatestEntry(user);
-    return !(lastEntry && lastEntry.end);
-  }
-
-  @gql.ResolveProperty("mediaItems")
-  async mediaItems(
-    @gql.Root() user: User,
-    @gql.Context() context: RequestContext
-  ): Promise<MediaItem[]> {
-    const currentUser = await context.user();
-    if (!currentUser || currentUser.id !== user.id) {
-      return [];
-    }
-    return user.mediaItems;
-  }
-
-  @gql.ResolveProperty("timesheets")
-  async timesheets(
-    @gql.Root() user: User,
-    @gql.Context() context: RequestContext
-  ): Promise<TimesheetEntry[]> {
-    const currentUser = await context.user();
-    if (!currentUser || currentUser.id !== user.id) {
-      return [];
-    }
-    return user.timesheetEntries;
-  }
-
 }
